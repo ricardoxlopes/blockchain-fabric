@@ -142,6 +142,9 @@ function networkDown () {
     # remove the docker-compose yaml file that was customized to the example
     rm -f docker-compose-e2e.yaml
   fi
+  #wipe previous networks, close endpoints
+  yes | docker network prune
+  echo -e
 }
 
 # Using docker-compose-e2e-template.yaml, replace constants with private key file names
