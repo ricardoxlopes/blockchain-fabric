@@ -388,11 +388,11 @@ if [ "${MODE}" == "up" ]; then
   networkUp
   elif [ "${MODE}" == "down" ]; then ## Clear the network
   networkDown
-  rm -rf ./crypto-config/*
-  rm -rf ./channel-artifacts/* 
-  generateCerts
-  replacePrivateKey
-  generateChannelArtifacts
+  # rm -rf ./crypto-config/*
+  # rm -rf ./channel-artifacts/* 
+  # generateCerts
+  # replacePrivateKey
+  # generateChannelArtifacts
   elif [ "${MODE}" == "generate" ]; then ## Generate Artifacts
   #delete previous artifacts
   rm -rf ./crypto-config/*
