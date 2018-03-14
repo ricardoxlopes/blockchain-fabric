@@ -10,7 +10,7 @@ echo
 echo "Build your first network (BYFN) end-to-end test"
 echo
 
-DELAY="$3"
+DELAY=1
 : ${CHANNEL_NAME:="mychannel"}
 : ${TIMEOUT:="60"}
 COUNTER=1
@@ -151,8 +151,14 @@ joinChannel () {
 }
 
 installChaincode () {
-	PEER=$1
-	setGlobals $PEER
+
+	setGlobals $1
+
+	if [ $1 -eq 0 -o $1 -eq 1 ] ; then
+		PEER=$1
+	else
+		PEER=$(($1 - 2))
+	fi
 
 	peer chaincode install -n mycc -v 1.0 -p github.com/hyperledger/fabric/examples/chaincode/go/chaincode_example02 >&log.txt
 	
@@ -167,10 +173,10 @@ instantiateChaincode () {
 	setGlobals $1
 
 	if [ $1 -eq 0 -o $1 -eq 1 ] ; then
-		PEER=$ch
+		PEER=$1
 		CHANNEL_NAME="mychannel1"
 	else
-		PEER=$(($ch - 2))
+		PEER=$(($1 - 2))
 		CHANNEL_NAME="mychannel2"
 	fi
 
@@ -190,9 +196,20 @@ instantiateChaincode () {
 }
 
 chaincodeQuery () {
-  PEER=$1
+
+	setGlobals $1
+
+	if [ $1 -eq 0 -o $1 -eq 1 ] ; then
+		PEER=$1
+		CHANNEL_NAME="mychannel1"
+	else
+		PEER=$(($1 - 2))
+		CHANNEL_NAME="mychannel2"
+	fi
+
+
   echo "===================== Querying on PEER$PEER on channel '$CHANNEL_NAME'... ===================== "
-  setGlobals $PEER
+
   local rc=1
   local starttime=$(date +%s)
 
@@ -252,28 +269,28 @@ createChannel
 # # ## Install chaincode on Peer0/Org1 and Peer2/Org2  TODO
   echo "Installing chaincode on org1/peer0..."
   installChaincode 0
-  echo "Install chaincode on org2/peer2..."
+  echo "Install chaincode on org1/peer1..."
+  installChaincode 1
+  echo "Installing chaincode on org2/peer0..."
   installChaincode 2
+  echo "Install chaincode on org2/peer1..."
+  installChaincode 3
 
-# # #Instantiate chaincode on Peer2/Org2
-  echo "Instantiating chaincode on org2/peer2..."
+# # #Instantiate chaincode on Peer0/Org2
+  echo "Instantiating chaincode on org2/peer0..."
   instantiateChaincode 2
 
-# # #Query on chaincode on Peer0/Org1
-  echo "Querying chaincode on org1/peer0..."
+# # #Query on chaincode on Peer0/Org2
+  echo "Querying chaincode on org2/peer0..."
   chaincodeQuery 2 100
 
-# # #Invoke on chaincode on Peer0/Org1
-#  echo "Sending invoke transaction on org1/peer0..."
-  chaincodeInvoke 2
+# # #Query on chaincode on Peer1/Org2
+  echo "Querying chaincode on org2/peer1..."
+  chaincodeQuery 3 100
 
-# ## Install chaincode on Peer3/Org2
-# echo "Installing chaincode on org2/peer3..."
- installChaincode 3
-
-# #Query on chaincode on Peer3/Org2, check if the result is 90
-# echo "Querying chaincode on org2/peer3..."
- chaincodeQuery 3 90
+# # # # #Query on chaincode on Peer1/Org1
+#    echo "Querying chaincode on org1/peer0..."
+#    chaincodeQuery 1 100
 
 echo
 echo "========= All GOOD, BYFN execution completed =========== "
@@ -287,4 +304,4 @@ echo "| |___  | |\  | | |_| | "
 echo "|_____| |_| \_| |____/  "
 echo
 
-exit 0
+#exit 0

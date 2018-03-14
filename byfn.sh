@@ -391,8 +391,8 @@ if [ "${MODE}" == "up" ]; then
   networkUp
   elif [ "${MODE}" == "down" ]; then ## Clear the network
   networkDown
-  # rm -rf ./crypto-config/*
-  # rm -rf ./channel-artifacts/* 
+  #rm -rf ./crypto-config/*
+  #rm -rf ./channel-artifacts/* 
   # generateCerts
   # replacePrivateKey
   # generateChannelArtifacts
