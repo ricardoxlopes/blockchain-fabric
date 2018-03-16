@@ -1,32 +1,5 @@
 #!/bin/bash
 
-#
-# Copyright IBM Corp All Rights Reserved
-#
-# SPDX-License-Identifier: Apache-2.0
-#
-
-# This script will orchestrate a sample end-to-end execution of the Hyperledger
-# Fabric network.
-#
-# The end-to-end verification provisions a sample Fabric network consisting of
-# two organizations, each maintaining two peers, and a “solo” ordering service.
-#
-# This verification makes use of two fundamental tools, which are necessary to
-# create a functioning transactional network with digital signature validation
-# and access control:
-#
-# * cryptogen - generates the x509 certificates used to identify and
-#   authenticate the various components in the network.
-# * configtxgen - generates the requisite configuration artifacts for orderer
-#   bootstrap and channel creation.
-#
-# Each tool consumes a configuration yaml file, within which we specify the topology
-# of our network (cryptogen) and the location of our certificates for various
-# configuration operations (configtxgen).  Once the tools have been successfully run,
-# we are able to launch our network.  More detail on the tools and the structure of
-# the network will be provided later in this document.  For now, let's get going...
-
 # prepending $PWD/../bin to PATH to ensure we are picking up the correct binaries
 # this may be commented out to resolve installed version of tools if desired
 export PATH=${PWD}/bin:${PWD}:$PATH
@@ -63,25 +36,6 @@ function printHelp () {
   echo "	byfn.sh -m down"
 }
 
-# Ask user for confirmation to proceed
-function askProceed () {
-  read -p "Continue (y/n)? " ans
-  case "$ans" in
-    y|Y )
-      echo "proceeding ..."
-    ;;
-    n|N )
-      echo "exiting..."
-      exit 1
-    ;;
-    * )
-      echo "invalid response"
-      askProceed
-    ;;
-  esac
-  #echo "skipped"
-}
-
 # Obtain CONTAINER_IDS and remove them
 # TODO Might want to make this optional - could clear other containers
 function clearContainers () {
@@ -110,13 +64,13 @@ function networkUp () {
   # generate artifacts if they don't exist
   if [ ! -d "crypto-config" ]; then
     generateCerts
-    #TODO replacePrivateKey
+    replacePrivateKey
     generateChannelArtifacts
   fi
   if [ "${IF_COUCHDB}" == "couchdb" ]; then
-      IMAGE_TAG=$IMAGETAG TIMEOUT=$CLI_TIMEOUT DELAY=$CLI_DELAY docker-compose -f $COMPOSE_FILE -f $COMPOSE_FILE_COUCH up -d 2>&1
+      echo 0 #IMAGE_TAG=$IMAGETAG TIMEOUT=$CLI_TIMEOUT DELAY=$CLI_DELAY docker-compose -f $COMPOSE_FILE -f $COMPOSE_FILE_COUCH up -d 2>&1
   else #TODO
-      IMAGE_TAG=$IMAGETAG TIMEOUT=$CLI_TIMEOUT DELAY=$CLI_DELAY docker-compose -f $COMPOSE_FILE up -d 2>&1
+      echo 0 #IMAGE_TAG=$IMAGETAG TIMEOUT=$CLI_TIMEOUT DELAY=$CLI_DELAY docker-compose -f $COMPOSE_FILE up -d 2>&1
   fi
    if [ $? -ne 0 ]; then
      echo "ERROR !!!! Unable to start network"
@@ -264,16 +218,19 @@ function generateChannelArtifacts() {
     exit 1
   fi
 
+  #TODO GENESIS
   echo "##########################################################"
   echo "#########  Generating Orderer Genesis block ##############"
   echo "##########################################################"
   # Note: For some unknown reason (at least for now) the block file can't be
   # named orderer.genesis.block or the orderer will fail to launch!
-  configtxgen -profile TwoOrgsOrdererGenesis -outputBlock ./channel-artifacts/genesis.block
+  configtxgen -profile OrdererGenesis -outputBlock ./channel-artifacts/genesis.block
   if [ "$?" -ne 0 ]; then
     echo "Failed to generate orderer genesis block..."
     exit 1
   fi
+
+  #TODO FOR CYCLE FOR CHANNELS
   echo
   echo "#################################################################"
   echo "### Generating channels configuration transactions            ###"
@@ -297,12 +254,7 @@ function generateChannelArtifacts() {
     echo "Failed to generate anchor peer update for Org1MSP..."
     exit 1
   fi
-  
-  echo
-  echo "#################################################################"
-  echo "### Generating channels configuration transactions            ###"
-  echo "#################################################################"
-  
+
   CHANNEL_NAME="mychannel2"
   configtxgen -profile Org2Channel -outputCreateChannelTx ./channel-artifacts/channel2.tx -channelID $CHANNEL_NAME
   
@@ -311,7 +263,7 @@ function generateChannelArtifacts() {
     exit 1
   fi
   
-    echo
+  echo
   echo "#################################################################"
   echo "#######    Generating anchor peer update for Org2MSP   ##########"
   echo "#################################################################"
@@ -320,6 +272,25 @@ function generateChannelArtifacts() {
     echo "Failed to generate anchor peer update for Org2MSP..."
     exit 1
   fi
+
+  CHANNEL_NAME="mychannel3"
+  configtxgen -profile Org3Channel -outputCreateChannelTx ./channel-artifacts/channel3.tx -channelID $CHANNEL_NAME
+  
+  if [ "$?" -ne 0 ]; then
+    echo "Failed to generate channel configuration transaction 3"
+    exit 1
+  fi
+  
+    echo
+  echo "#################################################################"
+  echo "#######    Generating anchor peer update for Org3MSP   ##########"
+  echo "#################################################################"
+  configtxgen -profile Org3Channel -outputAnchorPeersUpdate ./channel-artifacts/Org3MSPanchors.tx -channelID $CHANNEL_NAME -asOrg Org3MSP
+  if [ "$?" -ne 0 ]; then
+    echo "Failed to generate anchor peer update for Org2MSP..."
+    exit 1
+  fi
+
  }
 
 # Obtain the OS and Architecture string that will be used to select the correct
@@ -382,8 +353,6 @@ fi
   else
         echo "${EXPMODE} with channel '${CHANNEL_NAME}' and CLI timeout of '${CLI_TIMEOUT}'"
   fi
-# ask for confirmation to proceed
-#askProceed
 
 #Create the network using docker compose
 if [ "${MODE}" == "up" ]; then
