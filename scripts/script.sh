@@ -11,8 +11,8 @@ echo "Build your first network (BYFN) end-to-end test"
 echo
 
 DELAY=1
-: ${CHANNEL_NAME:="mychannel"}
-: ${TIMEOUT:="60"}
+# : ${CHANNEL_NAME:="mychannel"}
+# : ${TIMEOUT:="60"}
 COUNTER=1
 MAX_RETRY=5
 ORDERER_CA=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem
@@ -29,66 +29,55 @@ verifyResult () {
 
 setGlobals () {
 
-	if [ $1 -eq 0 -o $1 -eq 1 ] ; then
+	if [ "$1" -eq 0 ]
+	then
 		CORE_PEER_LOCALMSPID="Org1MSP"
 		CORE_PEER_TLS_ROOTCERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt
 		CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp
-		if [ $1 -eq 0 ]; then
-			CORE_PEER_ADDRESS=peer0.org1.example.com:7051
-		else
-			CORE_PEER_ADDRESS=peer1.org1.example.com:7051
-		fi
-	else
+		CORE_PEER_ADDRESS=peer0.org1.example.com:7051
+	elif [ "$1" -eq 1 ]
+	then
 		CORE_PEER_LOCALMSPID="Org2MSP"
 		CORE_PEER_TLS_ROOTCERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/tls/ca.crt
 		CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org2.example.com/users/Admin@org2.example.com/msp
-		if [ $1 -eq 2 ]; then
-			CORE_PEER_ADDRESS=peer0.org2.example.com:7051
-		else
-			CORE_PEER_ADDRESS=peer1.org2.example.com:7051
-		fi
+		CORE_PEER_ADDRESS=peer0.org2.example.com:7051
+	else
+		CORE_PEER_LOCALMSPID="Org3MSP"
+		CORE_PEER_TLS_ROOTCERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org3.example.com/peers/peer0.org3.example.com/tls/ca.crt
+		CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org3.example.com/users/Admin@org3.example.com/msp
+		CORE_PEER_ADDRESS=peer0.org3.example.com:7051
 	fi
 
 	env |grep CORE
 }
 
 createChannel() {
-	setGlobals 0
+	echo "VALUE"$1
+	setGlobals $1
 
   if [ -z "$CORE_PEER_TLS_ENABLED" -o "$CORE_PEER_TLS_ENABLED" = "false" ]; then
-		peer channel create -o orderer.example.com:7050 -c mychannel1 -f ./channel-artifacts/channel1.tx >&log.txt
+		peer channel create -o orderer.example.com:7050 -c mychannel$(($1 + 1)) -f ./channel-artifacts/channel$(($1 + 1)).tx >&log.txt
 	  else
-		peer channel create -o orderer.example.com:7050 -c mychannel1 -f ./channel-artifacts/channel1.tx --tls $CORE_PEER_TLS_ENABLED --cafile $ORDERER_CA >&log.txt
+		peer channel create -o orderer.example.com:7050 -c mychannel$(($1 + 1)) -f ./channel-artifacts/channel$(($1 + 1)).tx --tls $CORE_PEER_TLS_ENABLED --cafile $ORDERER_CA >&log.txt
 		  fi
 	res=$?
 	cat log.txt
-	verifyResult $res "Channel creation failed1"
-	echo "===================== Channel 1 is created successfully ===================== "
+	verifyResult $res "Channel$(($1 + 1)) creation failed"
+	echo "===================== Channel $(($1 + 1)) is created successfully ===================== "
 	echo
-
-	setGlobals 2
-
-  if [ -z "$CORE_PEER_TLS_ENABLED" -o "$CORE_PEER_TLS_ENABLED" = "false" ]; then
-		peer channel create -o orderer.example.com:7050 -c mychannel2 -f ./channel-artifacts/channel2.tx >&log.txt
-	 
-	  else
-		peer channel create -o orderer.example.com:7050 -c mychannel2 -f ./channel-artifacts/channel2.tx --tls $CORE_PEER_TLS_ENABLED --cafile $ORDERER_CA >&log.txt
-	fi
-	res=$?
-	cat log.txt
-	verifyResult $res "Channel creation failed2"
-	echo "===================== Channel 2 is created successfully ===================== "
-	echo
-
 }
 
 updateAnchorPeers() {
   setGlobals $1
 
-	if [ $1 -eq 0 -o $1 -eq 1 ] ; then
+	if [ $1 -eq 0 ]
+    then
 		CHANNEL_NAME="mychannel1"
-	else
+    elif [ $1 -eq 1 ]
+    then
 		CHANNEL_NAME="mychannel2"
+	else
+		CHANNEL_NAME="mychannel3"
 	fi
 
   	if [ -z "$CORE_PEER_TLS_ENABLED" -o "$CORE_PEER_TLS_ENABLED" = "false" ]; then
@@ -109,14 +98,20 @@ joinWithRetry () {
 
 	setGlobals $1
 
-	if [ $1 -eq 0 -o $1 -eq 1 ] ; then
+	if [ $1 -eq 0 ]
+    then
 		BLOCK_NAME="mychannel1.block"
-	else
+    elif [ $1 -eq 1 ]
+    then
 		BLOCK_NAME="mychannel2.block"
+	else
+		BLOCK_NAME="mychannel3.block"
 	fi
 
-	peer channel join -b $BLOCK_NAME  >&log.txt
+    PEER=0
 
+	peer channel join -b $BLOCK_NAME  >&log.txt
+	
 	res=$?
 	cat log.txt
 	if [ $res -ne 0 -a $COUNTER -lt $MAX_RETRY ]; then
@@ -128,25 +123,20 @@ joinWithRetry () {
 		COUNTER=1
 	fi
 	
-  verifyResult $res "After $MAX_RETRY attempts, PEER$ch has failed to Join the Channel"
+  verifyResult $res "After $MAX_RETRY attempts, PEER$PEER has failed to Join the Channel$(($ch + 1))"
 }
 
 joinChannel () {
-	for ch in 0 1 2 3; do
+	for ch in 0 1 2; do
 		setGlobals $ch
 		joinWithRetry $ch
 
-	if [ $ch -eq 0 -o $ch -eq 1 ] ; then
-		PEER=$ch
-		CHANNEL=1
-	else
-		PEER=$(($ch - 2))
-		CHANNEL=2
-	fi
+        PEER=0
+        CHANNEL=$(($ch + 1))
 
-		echo "===================== PEER$PEER joined on the channel: mychannel$CHANNEL ===================== "
-		sleep $DELAY
-		echo
+        echo "===================== PEER$PEER joined on the channel: mychannel$CHANNEL ===================== "
+        sleep $DELAY
+        echo
 	done
 }
 
@@ -154,18 +144,14 @@ installChaincode () {
 
 	setGlobals $1
 
-	if [ $1 -eq 0 -o $1 -eq 1 ] ; then
-		PEER=$1
-	else
-		PEER=$(($1 - 2))
-	fi
+    PEER=0
 
 	peer chaincode install -n mycc -v 1.0 -p github.com/hyperledger/fabric/examples/chaincode/go/chaincode_example02 >&log.txt
 	
 	res=$?
 	cat log.txt
         verifyResult $res "Chaincode installation on remote peer PEER$PEER has Failed"
-	echo "===================== Chaincode is installed on remote peer PEER$PEER ===================== "
+	echo "===================== Chaincode is installed on remote peer PEER$PEER ORG $(($1 + 1)) ===================== "
 	echo
 }
 
@@ -253,40 +239,45 @@ chaincodeInvoke () {
 }
 
 ## Create channel
-echo "Creating channel..."
-createChannel
+echo "Creating channels..."
+#org1 channel
+createChannel 0
+# #org2 channel
+createChannel 1
+# #org3 channel
+createChannel 2
 
-# ## Join all the peers to the channel
- echo "Having all peers join the channel..."
- joinChannel
+# # ## Join all the peers to the channel
+echo "Having all peers join the channel..."
+joinChannel
 
-# # ## Set the anchor peers for each org in the channel
-   echo "Updating anchor peers for org1..."
-   updateAnchorPeers 0
-   echo "Updating anchor peers for org2..."
-   updateAnchorPeers 2
+# # # ## Set the anchor peers for each org in the channel
+echo "Updating anchor peers for org1..."
+updateAnchorPeers 0
+echo "Updating anchor peers for org2..."
+updateAnchorPeers 1
+echo "Updating anchor peers for org3..."
+updateAnchorPeers 2
 
-# # ## Install chaincode on Peer0/Org1 and Peer2/Org2  TODO
-  echo "Installing chaincode on org1/peer0..."
-  installChaincode 0
-  echo "Install chaincode on org1/peer1..."
-  installChaincode 1
-  echo "Installing chaincode on org2/peer0..."
-  installChaincode 2
-  echo "Install chaincode on org2/peer1..."
-  installChaincode 3
+# # # ## Install chaincode on Peer0/Org1 and Peer2/Org2  TODO
+echo "Installing chaincode on peer0/org1..."
+installChaincode 0
+echo "Install chaincode on peer0/org2..."
+installChaincode 1
+echo "Installing chaincode on peer0/org3..."
+installChaincode 2
 
-# # #Instantiate chaincode on Peer0/Org2
-  echo "Instantiating chaincode on org2/peer0..."
-  instantiateChaincode 2
+# # # # #Instantiate chaincode on Peer0/Org2
+# echo "Instantiating chaincode on org2/peer0..."
+# instantiateChaincode 2
 
-# # #Query on chaincode on Peer0/Org2
-  echo "Querying chaincode on org2/peer0..."
-  chaincodeQuery 2 100
+# # # #Query on chaincode on Peer0/Org2
+#   echo "Querying chaincode on org2/peer0..."
+#   chaincodeQuery 2 100
 
-# # #Query on chaincode on Peer1/Org2
-  echo "Querying chaincode on org2/peer1..."
-  chaincodeQuery 3 100
+# # # #Query on chaincode on Peer1/Org2
+#   echo "Querying chaincode on org2/peer1..."
+#   chaincodeQuery 3 100
 
 # # # # #Query on chaincode on Peer1/Org1
 #    echo "Querying chaincode on org1/peer0..."
@@ -304,4 +295,5 @@ echo "| |___  | |\  | | |_| | "
 echo "|_____| |_| \_| |____/  "
 echo
 
+#TODO??????
 #exit 0

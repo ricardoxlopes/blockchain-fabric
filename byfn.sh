@@ -68,7 +68,7 @@ function networkUp () {
     generateChannelArtifacts
   fi
   if [ "${IF_COUCHDB}" == "couchdb" ]; then
-      echo 0 #IMAGE_TAG=$IMAGETAG TIMEOUT=$CLI_TIMEOUT DELAY=$CLI_DELAY docker-compose -f $COMPOSE_FILE -f $COMPOSE_FILE_COUCH up -d 2>&1
+      IMAGE_TAG=$IMAGETAG CHANNEL_NAME=$CHANNEL_NAME TIMEOUT=$CLI_TIMEOUT DELAY=$CLI_DELAY docker-compose -f $COMPOSE_FILE -f $COMPOSE_FILE_COUCH up -d 2>&1
   else #TODO
       echo 0 #IMAGE_TAG=$IMAGETAG TIMEOUT=$CLI_TIMEOUT DELAY=$CLI_DELAY docker-compose -f $COMPOSE_FILE up -d 2>&1
   fi
@@ -224,11 +224,25 @@ function generateChannelArtifacts() {
   echo "##########################################################"
   # Note: For some unknown reason (at least for now) the block file can't be
   # named orderer.genesis.block or the orderer will fail to launch!
-  configtxgen -profile OrdererGenesis -outputBlock ./channel-artifacts/genesis.block
+  configtxgen -profile OrdererGenesis1 -outputBlock ./channel-artifacts/genesis.block
   if [ "$?" -ne 0 ]; then
     echo "Failed to generate orderer genesis block..."
     exit 1
   fi
+
+  #TODO more than one genesis????
+
+  # configtxgen -profile OrdererGenesis2 -outputBlock ./channel-artifacts/genesis2.block
+  # if [ "$?" -ne 0 ]; then
+  #   echo "Failed to generate orderer genesis block..."
+  #   exit 1
+  # fi
+
+  # configtxgen -profile OrdererGenesis3 -outputBlock ./channel-artifacts/genesis3.block
+  # if [ "$?" -ne 0 ]; then
+  #   echo "Failed to generate orderer genesis block..."
+  #   exit 1
+  # fi
 
   #TODO FOR CYCLE FOR CHANNELS
   echo
@@ -287,7 +301,7 @@ function generateChannelArtifacts() {
   echo "#################################################################"
   configtxgen -profile Org3Channel -outputAnchorPeersUpdate ./channel-artifacts/Org3MSPanchors.tx -channelID $CHANNEL_NAME -asOrg Org3MSP
   if [ "$?" -ne 0 ]; then
-    echo "Failed to generate anchor peer update for Org2MSP..."
+    echo "Failed to generate anchor peer update for Org3MSP..."
     exit 1
   fi
 

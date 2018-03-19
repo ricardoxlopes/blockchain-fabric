@@ -14,7 +14,7 @@
 ################################################################################
 Profiles:
 
-    OrdererGenesis:
+    OrdererGenesis1:
         Orderer:
             <<: *OrdererDefaults
             Organizations:
@@ -26,6 +26,25 @@ Profiles:
             SampleConsortium2:
                 Organizations:
                     - *Org2
+            SampleConsortium3:
+                Organizations:
+                    - *Org3 
+    OrdererGenesis2:
+        Orderer:
+            <<: *OrdererDefaults
+            Organizations:
+                - *OrdererOrg
+        Consortiums:
+            SampleConsortium2:
+                Organizations:
+                    - *Org2
+                    
+    OrdererGenesis3:
+        Orderer:
+            <<: *OrdererDefaults
+            Organizations:
+                - *OrdererOrg
+        Consortiums:
             SampleConsortium3:
                 Organizations:
                     - *Org3
@@ -51,9 +70,6 @@ Profiles:
             <<: *ApplicationDefaults
             Organizations:
                 - *Org3
-
-
-
 ################################################################################
 #
 #   Section: Organizations

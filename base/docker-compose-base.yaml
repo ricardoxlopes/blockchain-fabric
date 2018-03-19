@@ -122,7 +122,7 @@ services:
       - CORE_PEER_ADDRESS=peer0.org3.example.com:7051
       - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.org3.example.com:7051
       - CORE_PEER_GOSSIP_BOOTSTRAP=peer0.org3.example.com:7051
-      - CORE_PEER_LOCALMSPID=org3MSP
+      - CORE_PEER_LOCALMSPID=Org3MSP
     volumes:
         - /var/run/:/host/var/run/
         - ../crypto-config/peerOrganizations/org3.example.com/peers/peer0.org3.example.com/msp:/etc/hyperledger/fabric/msp
