@@ -52,7 +52,6 @@ setGlobals () {
 }
 
 createChannel() {
-	echo "VALUE"$1
 	setGlobals $1
 
   if [ -z "$CORE_PEER_TLS_ENABLED" -o "$CORE_PEER_TLS_ENABLED" = "false" ]; then

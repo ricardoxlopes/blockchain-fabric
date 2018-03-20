@@ -6,16 +6,35 @@
 version: '2'
 
 volumes:
+  #ca.example.com: tddo
   orderer.example.com:
   peer0.org1.example.com:
   peer0.org2.example.com:
   peer0.org3.example.com:
 
 networks:
-  byfn:
-#   byfn2:
+  net1:
+  net2:
+  net3:
 
 services:
+  ca.example.com:
+    image: hyperledger/fabric-ca
+    environment:
+      - FABRIC_CA_HOME=/etc/hyperledger/fabric-ca-server
+      - FABRIC_CA_SERVER_CA_NAME=ca.example.com
+      # - FABRIC_CA_SERVER_CA_CERTFILE=/etc/hyperledger/fabric-ca-server-config/ca.org1.example.com-cert.pem
+      # - FABRIC_CA_SERVER_CA_KEYFILE=/etc/hyperledger/fabric-ca-server-config/*
+    ports:
+      - "7054:7054"
+    command: sh -c 'fabric-ca-server start -b admin:adminpw -d'
+    volumes:
+      - ./crypto-config/peerOrganizations/org1.example.com/ca/:/etc/hyperledger/fabric-ca-server-config
+    container_name: ca.example.com
+    networks:
+      - net1
+      - net2
+      - net3
 
   orderer.example.com:
     extends:
@@ -23,7 +42,9 @@ services:
       service: orderer.example.com
     container_name: orderer.example.com
     networks:
-      - byfn
+      - net1
+      - net2
+      - net3
       # - byfn2
 #TODO a network per org?????
 
@@ -33,7 +54,8 @@ services:
       file:  base/docker-compose-base.yaml
       service: peer0.org1.example.com
     networks:
-      - byfn
+      - net1
+
 
   # peer1.org1.example.com:
   #   container_name: peer1.org1.example.com
@@ -49,7 +71,8 @@ services:
       file:  base/docker-compose-base.yaml
       service: peer0.org2.example.com
     networks:
-      - byfn
+      - net2
+
 
   # peer1.org2.example.com:
   #   container_name: peer1.org2.example.com
@@ -65,7 +88,7 @@ services:
       file:  base/docker-compose-base.yaml
       service: peer0.org3.example.com
     networks:
-      - byfn
+      - net3
 
   cli:
     container_name: cli
@@ -92,10 +115,13 @@ services:
         - ./scripts:/opt/gopath/src/github.com/hyperledger/fabric/peer/scripts/
         - ./channel-artifacts:/opt/gopath/src/github.com/hyperledger/fabric/peer/channel-artifacts
     depends_on:
+      #- ca.example.com
       - orderer.example.com
       - peer0.org1.example.com
       - peer0.org2.example.com
       - peer0.org3.example.com
     networks:
-      - byfn
+      - net1
+      - net2
+      - net3
       # - byfn2
