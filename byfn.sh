@@ -69,7 +69,7 @@ function networkUp () {
   fi
   if [ "${IF_COUCHDB}" == "couchdb" ]; then
       #docker-compose -f $COMPOSE_FILE up -d ca.example.com 2>&1
-      docker-compose -f $COMPOSE_FILE up -d ca.example.com
+      #docker-compose -f $COMPOSE_FILE up -d ca.example.com
       
       IMAGE_TAG=$IMAGETAG TIMEOUT=$CLI_TIMEOUT DELAY=$CLI_DELAY docker-compose -f $COMPOSE_FILE -f $COMPOSE_FILE_COUCH up -d 2>&1
   else #TODO
@@ -121,16 +121,33 @@ function replacePrivateKey () {
   cp docker-compose-e2e-template.yaml docker-compose-e2e.yaml
 
   # The next steps will replace the template's contents with the
-  # actual values of the private key file names for the two CAs.
+  # actual values of the private key file names for the three CAs.
   CURRENT_DIR=$PWD
+
   cd crypto-config/peerOrganizations/org1.example.com/ca/
   PRIV_KEY=$(ls *_sk)
   cd "$CURRENT_DIR"
   sed $OPTS "s/CA1_PRIVATE_KEY/${PRIV_KEY}/g" docker-compose-e2e.yaml
+
   cd crypto-config/peerOrganizations/org2.example.com/ca/
   PRIV_KEY=$(ls *_sk)
   cd "$CURRENT_DIR"
   sed $OPTS "s/CA2_PRIVATE_KEY/${PRIV_KEY}/g" docker-compose-e2e.yaml
+
+  cd crypto-config/peerOrganizations/org3.example.com/ca/
+  PRIV_KEY=$(ls *_sk)
+  cd "$CURRENT_DIR"
+  sed $OPTS "s/CA3_PRIVATE_KEY/${PRIV_KEY}/g" docker-compose-e2e.yaml
+
+  # Copy the template to the file that will be modified to add the private key
+  cp docker-compose-cli-template.yaml docker-compose-cli.yaml
+
+  cd crypto-config/peerOrganizations/org1.example.com/ca/
+  PRIV_KEY=$(ls *_sk)
+  cd "$CURRENT_DIR"
+  sed $OPTS "s/CA4_PRIVATE_KEY/${PRIV_KEY}/g" docker-compose-cli.yaml
+  
+
   # If MacOSX, remove the temporary backup of the docker-compose file
   if [ "$ARCH" == "Darwin" ]; then
     rm docker-compose-e2e.yamlt

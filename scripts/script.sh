@@ -108,7 +108,7 @@ joinWithRetry () {
 	fi
 
     PEER=0
-
+	
 	peer channel join -b $BLOCK_NAME  >&log.txt
 	
 	res=$?
