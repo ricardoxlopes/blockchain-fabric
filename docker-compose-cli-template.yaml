@@ -15,10 +15,12 @@ volumes:
   ca2:
   
 networks:
-  byfn:
+  net1:
+  net2:
+  net3:
 
 services:
-  ca0:
+  ca1:
     image: hyperledger/fabric-ca:$IMAGE_TAG
     environment:
       - FABRIC_CA_HOME=/etc/hyperledger/fabric-ca-server
@@ -33,9 +35,9 @@ services:
       - ./crypto-config/peerOrganizations/org1.example.com/ca/:/etc/hyperledger/fabric-ca-server-config
     container_name: ca_peerOrg1
     networks:
-      - byfn
+      - net1
 
-  ca1:
+  ca2:
     image: hyperledger/fabric-ca:$IMAGE_TAG
     environment:
       - FABRIC_CA_HOME=/etc/hyperledger/fabric-ca-server
@@ -50,9 +52,9 @@ services:
       - ./crypto-config/peerOrganizations/org2.example.com/ca/:/etc/hyperledger/fabric-ca-server-config
     container_name: ca_peerOrg2
     networks:
-      - byfn
+      - net2
     
-  ca2:
+  ca3:
     image: hyperledger/fabric-ca:$IMAGE_TAG
     environment:
       - FABRIC_CA_HOME=/etc/hyperledger/fabric-ca-server
@@ -67,7 +69,7 @@ services:
       - ./crypto-config/peerOrganizations/org3.example.com/ca/:/etc/hyperledger/fabric-ca-server-config
     container_name: ca_peerOrg3
     networks:
-      - byfn
+      - net3
 
   orderer.example.com:
     extends:
@@ -75,7 +77,9 @@ services:
       service: orderer.example.com
     container_name: orderer.example.com
     networks:
-      - byfn
+      - net1
+      - net2
+      - net3
 
   peer0.org1.example.com:
     container_name: peer0.org1.example.com
@@ -83,7 +87,7 @@ services:
       file:  base/docker-compose-base.yaml
       service: peer0.org1.example.com
     networks:
-      - byfn
+      - net1
 
   peer0.org2.example.com:
     container_name: peer0.org2.example.com
@@ -91,7 +95,7 @@ services:
       file:  base/docker-compose-base.yaml
       service: peer0.org2.example.com
     networks:
-      - byfn
+      - net2
   
   peer0.org3.example.com:
     container_name: peer0.org3.example.com
@@ -99,7 +103,7 @@ services:
       file:  base/docker-compose-base.yaml
       service: peer0.org3.example.com
     networks:
-      - byfn
+      - net3
 
   cli:
     container_name: cli
@@ -133,4 +137,6 @@ services:
       - peer0.org2.example.com
       - peer0.org3.example.com
     networks:
-      - byfn
+      - net1
+      - net2
+      - net3

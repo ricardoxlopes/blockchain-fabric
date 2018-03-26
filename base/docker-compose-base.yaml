@@ -36,7 +36,7 @@ services:
     container_name: peer0.org1.example.com
     extends:
       file: peer-base.yaml
-      service: peer-base
+      service: peer-base1
     environment:
       - CORE_PEER_ID=peer0.org1.example.com
       - CORE_PEER_ADDRESS=peer0.org1.example.com:7051
@@ -56,7 +56,7 @@ services:
     container_name: peer0.org2.example.com
     extends:
       file: peer-base.yaml
-      service: peer-base
+      service: peer-base2
     environment:
       - CORE_PEER_ID=peer0.org2.example.com
       - CORE_PEER_ADDRESS=peer0.org2.example.com:7051
@@ -76,7 +76,7 @@ services:
     container_name: peer0.org3.example.com
     extends:
       file: peer-base.yaml
-      service: peer-base
+      service: peer-base3
     environment:
       - CORE_PEER_ID=peer0.org3.example.com
       - CORE_PEER_ADDRESS=peer0.org3.example.com:7051
