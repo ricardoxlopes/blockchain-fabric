@@ -61,7 +61,7 @@ PeerOrgs:
     # name collisions
     # ---------------------------------------------------------------------------
     Template:
-      Count: 1
+      Count: 2
       # Start: 5
       # Hostname: {{.Prefix}}{{.Index}} # default
     # ---------------------------------------------------------------------------
@@ -78,7 +78,7 @@ PeerOrgs:
     Domain: org2.example.com
     EnableNodeOUs: true
     Template:
-      Count: 1
+      Count: 2
     Users:
       Count: 1
 
@@ -87,4 +87,11 @@ PeerOrgs:
     Template:
       Count: 1
     Users:
-      Count: 1  
+      Count: 1
+
+  - Name: Pl1
+    Domain: pl1.example.com
+    Template:
+      Count: 1
+    Users:
+      Count: 1 

@@ -33,7 +33,9 @@ Profiles:
             SampleConsortium3:
                 Organizations:
                     - *Org3
-
+            PrivateLedger1:
+                Organizations:
+                    - *Pl1
     Org1Channel:
         Consortium: SampleConsortium1
         Application:
@@ -58,6 +60,15 @@ Profiles:
             <<: *ApplicationDefaults
             Organizations:
                 - *Org3
+            Capabilities:
+                <<: *ApplicationCapabilities
+    
+    Pl1Channel:
+        Consortium: PrivateLedger1
+        Application:
+            <<: *ApplicationDefaults
+            Organizations:
+                - *Pl1
             Capabilities:
                 <<: *ApplicationCapabilities
 
@@ -131,6 +142,21 @@ Organizations:
             # for cross org gossip communication.  Note, this value is only
             # encoded in the genesis block in the Application section context
             - Host: peer0.org3.example.com
+              Port: 7051
+
+    - &Pl1
+        Name: Pl1MSP
+
+        # ID to load the MSP definition as
+        ID: Pl1MSP
+
+        MSPDir: crypto-config/peerOrganizations/pl1.example.com/msp
+
+        AnchorPeers:
+            # AnchorPeers defines the location of peers which can be used
+            # for cross org gossip communication.  Note, this value is only
+            # encoded in the genesis block in the Application section context
+            - Host: peer0.pl1.example.com
               Port: 7051
 
 ################################################################################

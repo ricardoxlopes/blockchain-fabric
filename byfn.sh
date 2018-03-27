@@ -267,6 +267,11 @@ function replacePrivateKey () {
   cd "$CURRENT_DIR"
   sed $OPTS "s/CA3_PRIVATE_KEY/${PRIV_KEY}/g" docker-compose-cli.yaml
 
+  cd crypto-config/peerOrganizations/pl1.example.com/ca/
+  PRIV_KEY=$(ls *_sk)
+  cd "$CURRENT_DIR"
+  sed $OPTS "s/CAPl_PRIVATE_KEY/${PRIV_KEY}/g" docker-compose-cli.yaml
+
   # If MacOSX, remove the temporary backup of the docker-compose file
   if [ "$ARCH" == "Darwin" ]; then
     rm docker-compose-cli.yamlt
@@ -435,6 +440,23 @@ function generateChannelArtifacts() {
     exit 1
   fi
 
+  CHANNEL_NAME="mychannel4"
+  configtxgen -profile Pl1Channel -outputCreateChannelTx ./channel-artifacts/channel4.tx -channelID $CHANNEL_NAME
+  
+  if [ "$?" -ne 0 ]; then
+    echo "Failed to generate channel configuration transaction 4"
+    exit 1
+  fi
+  
+    echo
+  echo "#################################################################"
+  echo "#######    Generating anchor peer update for Pl1MSP   ##########"
+  echo "#################################################################"
+  configtxgen -profile Pl1Channel -outputAnchorPeersUpdate ./channel-artifacts/Pl1MSPanchors.tx -channelID $CHANNEL_NAME -asOrg Pl1MSP
+  if [ "$?" -ne 0 ]; then
+    echo "Failed to generate anchor peer update for Pl1MSP..."
+    exit 1
+  fi
 }
 
 # Obtain the OS and Architecture string that will be used to select the correct
