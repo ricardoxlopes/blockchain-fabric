@@ -84,6 +84,7 @@ PeerOrgs:
 
   - Name: Org3
     Domain: org3.example.com
+    EnableNodeOUs: true
     Template:
       Count: 1
     Users:
@@ -91,7 +92,8 @@ PeerOrgs:
 
   - Name: Pl1
     Domain: pl1.example.com
+    EnableNodeOUs: true
     Template:
-      Count: 3
+      Count: 2
     Users:
       Count: 1 

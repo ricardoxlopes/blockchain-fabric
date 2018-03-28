@@ -27,18 +27,18 @@ Profiles:
             SampleConsortium1:
                 Organizations:
                     - *Org1
-                    - *Org4
+                    - *Pl1
             SampleConsortium2:
                 Organizations:  
                     - *Org2
-                    - *Org4
+                    - *Pl1
             SampleConsortium3:
                 Organizations:
                     - *Org3
-                    - *Org4
+                    - *Pl1
             SampleConsortium4:
                 Organizations:
-                    - *Org4
+                    - *Pl1
 
     Org1Channel:
         Consortium: SampleConsortium1
@@ -46,7 +46,7 @@ Profiles:
             <<: *ApplicationDefaults
             Organizations:
                 - *Org1
-                - *Org4
+                - *Pl1
             Capabilities:
                 <<: *ApplicationCapabilities
 
@@ -56,7 +56,7 @@ Profiles:
             <<: *ApplicationDefaults
             Organizations:
                 - *Org2
-                - *Org4
+                - *Pl1
             Capabilities:
                 <<: *ApplicationCapabilities
 
@@ -66,16 +66,16 @@ Profiles:
             <<: *ApplicationDefaults
             Organizations:
                 - *Org3
-                - *Org4
+                - *Pl1
             Capabilities:
                 <<: *ApplicationCapabilities
 
-    Pl1:
+    Pl1Channel:
         Consortium: SampleConsortium4
         Application:
             <<: *ApplicationDefaults
             Organizations:
-                - *Org4
+                - *Pl1
             Capabilities:
                 <<: *ApplicationCapabilities
 
@@ -111,7 +111,7 @@ Organizations:
         ID: Org1MSP
 
         MSPDir: crypto-config/peerOrganizations/org1.example.com/msp
-
+        
         AnchorPeers:
             # AnchorPeers defines the location of peers which can be used
             # for cross org gossip communication.  Note, this value is only

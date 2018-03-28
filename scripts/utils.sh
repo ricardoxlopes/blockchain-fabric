@@ -27,6 +27,7 @@ setOrdererGlobals() {
 setGlobals () {
 	PEER=$1
 	ORG=$2
+
 	if [ $ORG -eq 1 ] ; then
 		CORE_PEER_LOCALMSPID="Org1MSP"
 		CORE_PEER_TLS_ROOTCERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt
@@ -56,6 +57,15 @@ setGlobals () {
 			CORE_PEER_ADDRESS=peer1.org3.example.com:7051
 		fi
 	elif [ $ORG -eq 4 ] ; then
+		CORE_PEER_LOCALMSPID="Pl1MSP"
+		CORE_PEER_TLS_ROOTCERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/pl1.example.com/peers/peer0.pl1.example.com/tls/ca.crt
+		CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/pl1.example.com/users/Admin@pl1.example.com/msp
+		if [ $PEER -eq 0 ]; then
+			CORE_PEER_ADDRESS=peer0.pl1.example.com:7051
+		else
+			CORE_PEER_ADDRESS=peer1.pl1.example.com:7051
+		fi
+	elif [ $ORG -eq 5 ] ; then
 		CORE_PEER_LOCALMSPID="Pl1MSP"
 		CORE_PEER_TLS_ROOTCERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/pl1.example.com/peers/peer0.pl1.example.com/tls/ca.crt
 		CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/pl1.example.com/users/Admin@pl1.example.com/msp
@@ -110,8 +120,12 @@ joinChannelWithRetry () {
 	elif [ $2 -eq 3 ]
     then
 		BLOCK_NAME="mychannel3.block"
-	else
+	elif [ $2 -eq 4 ]
+	then
 		BLOCK_NAME="mychannel4.block"
+	elif [ $2 -eq 5 ]
+	then
+		BLOCK_NAME="mychannel1.block"
 	fi
 
         set -x
@@ -136,7 +150,7 @@ installChaincode () {
 	setGlobals $PEER $ORG
 	VERSION=${3:-1.0}
         set -x
-		
+
 	peer chaincode install -n mycc -v ${VERSION} -l ${LANGUAGE} -p ${CC_SRC_PATH} >&log.txt
 	res=$?
         set +x
@@ -152,6 +166,7 @@ instantiateChaincode () {
 	ORG=$2
 	setGlobals $PEER $ORG
 	VERSION=${3:-1.0}
+	#mycc=mycc$2
 
 	if [ $2 -eq 1 ]
     then
@@ -166,7 +181,7 @@ instantiateChaincode () {
 					set +x
 		else
 					set -x
-			peer chaincode instantiate -o orderer.example.com:7050 --tls $CORE_PEER_TLS_ENABLED --cafile $ORDERER_CA -C $CHANNEL_NAME -n mycc -l ${LANGUAGE} -v 1.0 -c '{"Args":["init","a","10","b","20"]}' -P "OR	('Org1MSP.peer','Org2MSP.peer')" >&log.txt
+			peer chaincode instantiate -o orderer.example.com:7050 --tls $CORE_PEER_TLS_ENABLED --cafile $ORDERER_CA -C $CHANNEL_NAME -n mycc -l ${LANGUAGE} -v ${VERSION} -c '{"Args":["init","a","10","b","20"]}' -P "OR	('Org1MSP.peer','Org2MSP.peer')" >&log.txt
 			res=$?
 					set +x
 		fi
@@ -184,7 +199,7 @@ instantiateChaincode () {
 					set +x
 		else
 					set -x
-			peer chaincode instantiate -o orderer.example.com:7050 --tls $CORE_PEER_TLS_ENABLED --cafile $ORDERER_CA -C $CHANNEL_NAME -n mycc -l ${LANGUAGE} -v 1.0 -c '{"Args":["init","a","10","b","20"]}' -P "OR	('Org1MSP.peer','Org2MSP.peer')" >&log.txt
+			peer chaincode instantiate -o orderer.example.com:7050 --tls $CORE_PEER_TLS_ENABLED --cafile $ORDERER_CA -C $CHANNEL_NAME -n mycc -l ${LANGUAGE} -v ${VERSION}-c '{"Args":["init","a","10","b","20"]}' -P "OR	('Org1MSP.peer','Org2MSP.peer')" >&log.txt
 			res=$?
 					set +x
 		fi
@@ -201,7 +216,7 @@ instantiateChaincode () {
 					set +x
 		else
 					set -x
-			peer chaincode instantiate -o orderer.example.com:7050 --tls $CORE_PEER_TLS_ENABLED --cafile $ORDERER_CA -C $CHANNEL_NAME -n mycc -l ${LANGUAGE} -v 1.0 -c '{"Args":["init","a","100","b","200"]}' >&log.txt
+			peer chaincode instantiate -o orderer.example.com:7050 --tls $CORE_PEER_TLS_ENABLED --cafile $ORDERER_CA -C $CHANNEL_NAME -n mycc -l ${LANGUAGE} -v ${VERSION} -c '{"Args":["init","a","100","b","200"]}' >&log.txt
 			res=$?
 					set +x
 		fi
@@ -212,12 +227,12 @@ instantiateChaincode () {
 		# lets supply it directly as we know it using the "-o" option
 		if [ -z "$CORE_PEER_TLS_ENABLED" -o "$CORE_PEER_TLS_ENABLED" = "false" ]; then
 					set -x
-			peer chaincode instantiate -o orderer.example.com:7050 -C $CHANNEL_NAME -n mycc -l ${LANGUAGE} -v ${VERSION} -c '{"Args":["init","a","300","b","400"]}' -P "OR	('Pl1MSP.peer','Org1MSP.peer')" >&log.txt
+			peer chaincode instantiate -o orderer.example.com:7050 -C $CHANNEL_NAME -n mycc -l ${LANGUAGE} -v ${VERSION} -c '{"Args":["init","a","300","b","400"]}' >&log.txt
 			res=$?
 					set +x
 		else
 					set -x
-			peer chaincode instantiate -o orderer.example.com:7050 --tls $CORE_PEER_TLS_ENABLED --cafile $ORDERER_CA -C $CHANNEL_NAME -n mycc -l ${LANGUAGE} -v 1.0 -c '{"Args":["init","a","300","b","400"]}' -P "OR	('Pl1MSP.peer','Org1MSP.peer')" >&log.txt
+			peer chaincode instantiate -o orderer.example.com:7050 --tls $CORE_PEER_TLS_ENABLED --cafile $ORDERER_CA -C $CHANNEL_NAME -n mycc -l ${LANGUAGE} -v ${VERSION} -c '{"Args":["init","a","300","b","400"]}' >&log.txt
 			res=$?
 					set +x
 		fi

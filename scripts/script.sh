@@ -33,8 +33,8 @@ echo "Channel name : "$CHANNEL_NAME
 . scripts/utils.sh
 
 createChannel() {
-	$PEER=$1
-	$ORG=$2
+	PEER=$1
+	ORG=$2
 
 	setGlobals $1 $2
 
@@ -64,9 +64,22 @@ joinChannel () {
 			echo
 	    done
 	done
-
+	joinChannelWithRetry 0 5
+	echo "===================== peer0.org5 joined on the channel mychannel1 ===================== "
+			sleep $DELAY
+			echo
 	joinChannelWithRetry 0 3
+	echo "===================== peer0.org3 joined on the channel mychannel3 ===================== "
+			sleep $DELAY
+			echo
 	joinChannelWithRetry 0 4
+	echo "===================== peer0.org4 joined on the channel mychannel4 ===================== "
+			sleep $DELAY
+			echo
+	joinChannelWithRetry 1 4
+	echo "===================== peer1.org4 joined on the channel mychannel4 ===================== "
+			sleep $DELAY
+			echo
 }
 
 ## Create channel
@@ -103,6 +116,8 @@ echo "Installing chaincode on peer0.org3..."
 installChaincode 0 3
 echo "Installing chaincode on peer0.pl1..."
 installChaincode 0 4
+echo "Installing chaincode on peer1.pl1..."
+installChaincode 1 4
 
 echo "Instantiating chaincode on peer0.org1..."
 instantiateChaincode 0 1
