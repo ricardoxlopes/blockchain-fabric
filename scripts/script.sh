@@ -99,7 +99,7 @@ echo "Installing chaincode on peer0.org2..."
 installChaincode 0 2
 echo "Installing chaincode on peer1.org2..."
 installChaincode 1 2
-echo "Installing chaincode on peer0.org2..."
+echo "Installing chaincode on peer0.org3..."
 installChaincode 0 3
 echo "Installing chaincode on peer0.pl1..."
 installChaincode 0 4
@@ -109,41 +109,41 @@ instantiateChaincode 0 1
 echo "Instantiating chaincode on peer0.org2..."
 instantiateChaincode 0 2
 # echo "Instantiating chaincode on peer0.org3..."
-# instantiateChaincode 0 3
+instantiateChaincode 0 3
 echo "Instantiating chaincode on peer0.pl1..."
 instantiateChaincode 0 4
 
-echo "Querying chaincode on peer0.org1..."
-chaincodeQuery 0 1 100
-# echo "Querying chaincode on peer1.org1..."
-# chaincodeQuery 1 1 100
-# echo "Querying chaincode on peer0.org2..."
+# echo "Querying chaincode on peer0.org1..."
+#chaincodeQuery 0 1 10 0
+# # echo "Querying chaincode on peer1.org1..."
+# # chaincodeQuery 1 1 100
+# # echo "Querying chaincode on peer0.org2..."
+#chaincodeQuery 0 2 20 1
+# # echo "Querying chaincode on peer1.org2..."
+# # chaincodeQuery 1 2 100
+# # echo "Querying chaincode on peer0.org3..."
+# # chaincodeQuery 0 3 100
+# # echo "Querying chaincode on peer0.pl1..."
+# # chaincodeQuery 0 4 100
+
+# # Invoke chaincode on peer0.org1
+# echo "Sending invoke transaction on peer0.org1..."
+# chaincodeInvoke 0 1
+
+# ## Install chaincode on peer1.org2
+# #echo "Installing chaincode on peer1.org2..."
+# #installChaincode 1 2
+
+# # Query on chaincode on peer1.org2, check if the result is 90
+# #echo "Querying chaincode on peer1.org2..."
+# chaincodeQuery 0 1 90
+# chaincodeQuery 1 1 90
 # chaincodeQuery 0 2 100
-# echo "Querying chaincode on peer1.org2..."
-# chaincodeQuery 1 2 100
-# echo "Querying chaincode on peer0.org3..."
+
+# echo "Instantiating chaincode on peer0.org3..."
+# instantiateChaincode 0 3
+
 # chaincodeQuery 0 3 100
-# echo "Querying chaincode on peer0.pl1..."
-# chaincodeQuery 0 4 100
-
-# Invoke chaincode on peer0.org1
-echo "Sending invoke transaction on peer0.org1..."
-chaincodeInvoke 0 1
-
-## Install chaincode on peer1.org2
-#echo "Installing chaincode on peer1.org2..."
-#installChaincode 1 2
-
-# Query on chaincode on peer1.org2, check if the result is 90
-#echo "Querying chaincode on peer1.org2..."
-chaincodeQuery 0 1 90
-chaincodeQuery 1 1 90
-chaincodeQuery 0 2 100
-
-echo "Instantiating chaincode on peer0.org3..."
-instantiateChaincode 0 3
-
-chaincodeQuery 0 3 100
 
 echo
 echo "========= All GOOD, BYFN execution completed =========== "

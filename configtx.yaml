@@ -27,21 +27,26 @@ Profiles:
             SampleConsortium1:
                 Organizations:
                     - *Org1
+                    - *Org4
             SampleConsortium2:
                 Organizations:  
                     - *Org2
+                    - *Org4
             SampleConsortium3:
                 Organizations:
                     - *Org3
-            PrivateLedger1:
+                    - *Org4
+            SampleConsortium4:
                 Organizations:
-                    - *Pl1
+                    - *Org4
+
     Org1Channel:
         Consortium: SampleConsortium1
         Application:
             <<: *ApplicationDefaults
             Organizations:
                 - *Org1
+                - *Org4
             Capabilities:
                 <<: *ApplicationCapabilities
 
@@ -51,6 +56,7 @@ Profiles:
             <<: *ApplicationDefaults
             Organizations:
                 - *Org2
+                - *Org4
             Capabilities:
                 <<: *ApplicationCapabilities
 
@@ -60,15 +66,16 @@ Profiles:
             <<: *ApplicationDefaults
             Organizations:
                 - *Org3
+                - *Org4
             Capabilities:
                 <<: *ApplicationCapabilities
-    
-    Pl1Channel:
-        Consortium: PrivateLedger1
+
+    Pl1:
+        Consortium: SampleConsortium4
         Application:
             <<: *ApplicationDefaults
             Organizations:
-                - *Pl1
+                - *Org4
             Capabilities:
                 <<: *ApplicationCapabilities
 

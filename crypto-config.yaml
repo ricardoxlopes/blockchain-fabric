@@ -92,6 +92,6 @@ PeerOrgs:
   - Name: Pl1
     Domain: pl1.example.com
     Template:
-      Count: 1
+      Count: 3
     Users:
       Count: 1 

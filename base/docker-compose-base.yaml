@@ -121,7 +121,7 @@ services:
       - CORE_PEER_ID=peer0.org3.example.com
       - CORE_PEER_ADDRESS=peer0.org3.example.com:7051
       - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.org3.example.com:7051
-      - CORE_PEER_GOSSIP_BOOTSTRAP=peer1.org3.example.com:7051
+      - CORE_PEER_GOSSIP_BOOTSTRAP=peer0.org3.example.com:7051
       - CORE_PEER_LOCALMSPID=Org3MSP
     volumes:
         - /var/run/:/host/var/run/
@@ -141,7 +141,7 @@ services:
       - CORE_PEER_ID=peer0.pl1.example.com
       - CORE_PEER_ADDRESS=peer0.pl1.example.com:7051
       - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.pl1.example.com:7051
-      - CORE_PEER_GOSSIP_BOOTSTRAP=peer1.pl1.example.com:7051
+      - CORE_PEER_GOSSIP_BOOTSTRAP=peer0.pl1.example.com:7051
       - CORE_PEER_LOCALMSPID=Pl1MSP
     volumes:
         - /var/run/:/host/var/run/
