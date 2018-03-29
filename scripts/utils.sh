@@ -56,16 +56,7 @@ setGlobals () {
 		else
 			CORE_PEER_ADDRESS=peer1.org3.example.com:7051
 		fi
-	elif [ $ORG -eq 4 ] ; then
-		CORE_PEER_LOCALMSPID="Pl1MSP"
-		CORE_PEER_TLS_ROOTCERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/pl1.example.com/peers/peer0.pl1.example.com/tls/ca.crt
-		CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/pl1.example.com/users/Admin@pl1.example.com/msp
-		if [ $PEER -eq 0 ]; then
-			CORE_PEER_ADDRESS=peer0.pl1.example.com:7051
-		else
-			CORE_PEER_ADDRESS=peer1.pl1.example.com:7051
-		fi
-	elif [ $ORG -eq 5 ] ; then
+	elif [ $ORG -eq 4 -o $ORG -eq 5 -o $ORG -eq 6 ] ; then
 		CORE_PEER_LOCALMSPID="Pl1MSP"
 		CORE_PEER_TLS_ROOTCERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/pl1.example.com/peers/peer0.pl1.example.com/tls/ca.crt
 		CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/pl1.example.com/users/Admin@pl1.example.com/msp
@@ -126,6 +117,9 @@ joinChannelWithRetry () {
 	elif [ $2 -eq 5 ]
 	then
 		BLOCK_NAME="mychannel1.block"
+	elif [ $2 -eq 6 ]
+	then
+		BLOCK_NAME="mychannel3.block"
 	fi
 
         set -x
@@ -288,7 +282,7 @@ chaincodeQuery () {
   echo
   cat log.txt
   if test $rc -eq 0 ; then
-	echo "===================== Query on peer${PEER}.org${ORG} on channel '$CHANNEL_NAME' is successful ===================== "
+	echo "===================== Query on peer${PEER}.org${ORG} on mychannel$ORG is successful ===================== "
   else
 	echo "!!!!!!!!!!!!!!! Query result on peer${PEER}.org${ORG} is INVALID !!!!!!!!!!!!!!!!"
         echo "================== ERROR !!! FAILED to execute End-2-End Scenario =================="

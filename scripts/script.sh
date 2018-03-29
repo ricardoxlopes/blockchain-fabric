@@ -68,6 +68,10 @@ joinChannel () {
 	echo "===================== peer0.org5 joined on the channel mychannel1 ===================== "
 			sleep $DELAY
 			echo
+	joinChannelWithRetry 0 6
+	echo "===================== peer0.org5 joined on the channel mychannel3 ===================== "
+			sleep $DELAY
+			echo
 	joinChannelWithRetry 0 3
 	echo "===================== peer0.org3 joined on the channel mychannel3 ===================== "
 			sleep $DELAY
@@ -128,18 +132,12 @@ instantiateChaincode 0 3
 echo "Instantiating chaincode on peer0.pl1..."
 instantiateChaincode 0 4
 
-# echo "Querying chaincode on peer0.org1..."
-#chaincodeQuery 0 1 10 0
-# # echo "Querying chaincode on peer1.org1..."
-# # chaincodeQuery 1 1 100
-# # echo "Querying chaincode on peer0.org2..."
-#chaincodeQuery 0 2 20 1
-# # echo "Querying chaincode on peer1.org2..."
-# # chaincodeQuery 1 2 100
-# # echo "Querying chaincode on peer0.org3..."
-# # chaincodeQuery 0 3 100
-# # echo "Querying chaincode on peer0.pl1..."
-# # chaincodeQuery 0 4 100
+echo "QUERY a peer0.org1"
+chaincodeQuery 0 1 10 0
+echo "QUERY b peer0.Pl1"
+chaincodeQuery 0 4 400 1
+echo "QUERY a peer0.org3"
+chaincodeQuery 0 3 100 0
 
 # # Invoke chaincode on peer0.org1
 # echo "Sending invoke transaction on peer0.org1..."
