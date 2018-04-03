@@ -124,20 +124,22 @@ echo "Installing chaincode on peer1.pl1..."
 installChaincode 1 4
 
 echo "Instantiating chaincode on peer0.org1..."
-instantiateChaincode 0 1
+instantiateChaincode 0 1 '"record1","{\"name\":\"name\",\"name1\":\"name1\"}"'
 echo "Instantiating chaincode on peer0.org2..."
-instantiateChaincode 0 2
-# echo "Instantiating chaincode on peer0.org3..."
-instantiateChaincode 0 3
+instantiateChaincode 0 2 '"record2","{\"name2\":\"name2\",\"name3\":\"name3\"}"'
+echo "Instantiating chaincode on peer0.org3..."
+instantiateChaincode 0 3 '"init","{}"'
 echo "Instantiating chaincode on peer0.pl1..."
-instantiateChaincode 0 4
+instantiateChaincode 0 4 '"init","{}"'
 
-echo "QUERY a peer0.org1"
-chaincodeQuery 0 1 10 0
-echo "QUERY b peer0.Pl1"
-chaincodeQuery 0 4 400 1
-echo "QUERY a peer0.org3"
-chaincodeQuery 0 3 100 0
+echo "QUERY peer0.org1"
+chaincodeQuery 0 1 "record1"
+echo "QUERY peer1.org1"
+chaincodeQuery 1 1 "record1"
+# echo "QUERY peer0.org2"
+# chaincodeQuery 0 2 "record2"
+#echo "QUERY a peer0.org3"
+#chaincodeQuery 0 3 "record1"
 
 # # Invoke chaincode on peer0.org1
 # echo "Sending invoke transaction on peer0.org1..."

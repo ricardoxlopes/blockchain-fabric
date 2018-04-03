@@ -142,7 +142,7 @@ installChaincode () {
 	PEER=$1
 	ORG=$2
 	setGlobals $PEER $ORG
-	VERSION=${3:-1.0}
+	VERSION="1.0"
         set -x
 
 	peer chaincode install -n mycc -v ${VERSION} -l ${LANGUAGE} -p ${CC_SRC_PATH} >&log.txt
@@ -154,14 +154,15 @@ installChaincode () {
 	echo
 }
 
-#TODO CICLO
+#TODO CICLO #change chaincode names
 instantiateChaincode () {
 	PEER=$1
 	ORG=$2
-	setGlobals $PEER $ORG
-	VERSION=${3:-1.0}
-	#mycc=mycc$2
+	DATA=$3
 
+	setGlobals $PEER $ORG
+	VERSION="1.0"
+	
 	if [ $2 -eq 1 ]
     then
 		CHANNEL_NAME="mychannel1"
@@ -170,12 +171,13 @@ instantiateChaincode () {
 		# lets supply it directly as we know it using the "-o" option
 		if [ -z "$CORE_PEER_TLS_ENABLED" -o "$CORE_PEER_TLS_ENABLED" = "false" ]; then
 					set -x
-			peer chaincode instantiate -o orderer.example.com:7050 -C $CHANNEL_NAME -n mycc -l ${LANGUAGE} -v ${VERSION} -c '{"Args":["init","a","10","b","20"]}' -P "OR	('Org1MSP.peer','Org2MSP.peer')" >&log.txt
+			
+			peer chaincode instantiate -o orderer.example.com:7050 -C $CHANNEL_NAME -n mycc -l ${LANGUAGE} -v $VERSION -c '{"Args":['$DATA']}'  -P "OR ('Org1MSP.peer','Pl1MSP.peer')" >&log.txt
 			res=$?
 					set +x
 		else
 					set -x
-			peer chaincode instantiate -o orderer.example.com:7050 --tls $CORE_PEER_TLS_ENABLED --cafile $ORDERER_CA -C $CHANNEL_NAME -n mycc -l ${LANGUAGE} -v ${VERSION} -c '{"Args":["init","a","10","b","20"]}' -P "OR	('Org1MSP.peer','Org2MSP.peer')" >&log.txt
+			peer chaincode instantiate -o orderer.example.com:7050 --tls $CORE_PEER_TLS_ENABLED --cafile $ORDERER_CA -C $CHANNEL_NAME -n mycc -l ${LANGUAGE} -v $VERSION -c '{"Args":['$DATA']}' -P "OR	('Org1MSP.peer','Pl1MSP.peer')" >&log.txt
 			res=$?
 					set +x
 		fi
@@ -188,12 +190,12 @@ instantiateChaincode () {
 		# lets supply it directly as we know it using the "-o" option
 		if [ -z "$CORE_PEER_TLS_ENABLED" -o "$CORE_PEER_TLS_ENABLED" = "false" ]; then
 					set -x
-			peer chaincode instantiate -o orderer.example.com:7050 -C $CHANNEL_NAME -n mycc -l ${LANGUAGE} -v ${VERSION} -c '{"Args":["init","a","10","b","20"]}' -P "OR	('Org1MSP.peer','Org2MSP.peer')" >&log.txt
+			peer chaincode instantiate -o orderer.example.com:7050 -C $CHANNEL_NAME -n mycc -l ${LANGUAGE} -v ${VERSION} -c '{"Args":['$DATA']}' -P "OR	('Org2MSP.peer','Pl1MSP.peer')" >&log.txt
 			res=$?
 					set +x
 		else
 					set -x
-			peer chaincode instantiate -o orderer.example.com:7050 --tls $CORE_PEER_TLS_ENABLED --cafile $ORDERER_CA -C $CHANNEL_NAME -n mycc -l ${LANGUAGE} -v ${VERSION}-c '{"Args":["init","a","10","b","20"]}' -P "OR	('Org1MSP.peer','Org2MSP.peer')" >&log.txt
+			peer chaincode instantiate -o orderer.example.com:7050 --tls $CORE_PEER_TLS_ENABLED --cafile $ORDERER_CA -C $CHANNEL_NAME -n mycc -l ${LANGUAGE} -v ${VERSION}-c '{"Args":['$DATA']}' -P "OR	('Org2MSP.peer','Pl1MSP.peer')" >&log.txt
 			res=$?
 					set +x
 		fi
@@ -205,12 +207,12 @@ instantiateChaincode () {
 		# lets supply it directly as we know it using the "-o" option
 		if [ -z "$CORE_PEER_TLS_ENABLED" -o "$CORE_PEER_TLS_ENABLED" = "false" ]; then
 					set -x
-			peer chaincode instantiate -o orderer.example.com:7050 -C $CHANNEL_NAME -n mycc -l ${LANGUAGE} -v ${VERSION} -c '{"Args":["init","a","100","b","200"]}' >&log.txt
+			peer chaincode instantiate -o orderer.example.com:7050 -C $CHANNEL_NAME -n mycc -l ${LANGUAGE} -v ${VERSION} -c '{"Args":['$DATA']}'  -P "OR	('Org3MSP.peer','Pl1MSP.peer')" >&log.txt
 			res=$?
 					set +x
 		else
 					set -x
-			peer chaincode instantiate -o orderer.example.com:7050 --tls $CORE_PEER_TLS_ENABLED --cafile $ORDERER_CA -C $CHANNEL_NAME -n mycc -l ${LANGUAGE} -v ${VERSION} -c '{"Args":["init","a","100","b","200"]}' >&log.txt
+			peer chaincode instantiate -o orderer.example.com:7050 --tls $CORE_PEER_TLS_ENABLED --cafile $ORDERER_CA -C $CHANNEL_NAME -n mycc -l ${LANGUAGE} -v ${VERSION} -c '{"Args":['$DATA']}'  -P "OR	('Org3MSP.peer','Pl1MSP.peer')" >&log.txt
 			res=$?
 					set +x
 		fi
@@ -221,12 +223,12 @@ instantiateChaincode () {
 		# lets supply it directly as we know it using the "-o" option
 		if [ -z "$CORE_PEER_TLS_ENABLED" -o "$CORE_PEER_TLS_ENABLED" = "false" ]; then
 					set -x
-			peer chaincode instantiate -o orderer.example.com:7050 -C $CHANNEL_NAME -n mycc -l ${LANGUAGE} -v ${VERSION} -c '{"Args":["init","a","300","b","400"]}' >&log.txt
+			peer chaincode instantiate -o orderer.example.com:7050 -C $CHANNEL_NAME -n mycc -l ${LANGUAGE} -v ${VERSION} -c '{"Args":['$DATA']}' >&log.txt
 			res=$?
 					set +x
 		else
 					set -x
-			peer chaincode instantiate -o orderer.example.com:7050 --tls $CORE_PEER_TLS_ENABLED --cafile $ORDERER_CA -C $CHANNEL_NAME -n mycc -l ${LANGUAGE} -v ${VERSION} -c '{"Args":["init","a","300","b","400"]}' >&log.txt
+			peer chaincode instantiate -o orderer.example.com:7050 --tls $CORE_PEER_TLS_ENABLED --cafile $ORDERER_CA -C $CHANNEL_NAME -n mycc -l ${LANGUAGE} -v ${VERSION} -c '{"Args":['$DATA']}' >&log.txt
 			res=$?
 					set +x
 		fi
@@ -257,7 +259,7 @@ chaincodeQuery () {
   PEER=$1
   ORG=$2
   setGlobals $PEER $ORG
-  EXPECTED_RESULT=$3
+  
   echo "===================== Querying on peer${PEER}.org${ORG} on channel mychannel$ORG ... ===================== "
   local rc=1
   local starttime=$(date +%s)
@@ -269,15 +271,12 @@ chaincodeQuery () {
      sleep $DELAY
      echo "Attempting to Query peer${PEER}.org${ORG} ...$(($(date +%s)-starttime)) secs"
      set -x
-	 if [ $4 -eq 0 ]; then
-     	peer chaincode query -C mychannel$ORG -n mycc -c '{"Args":["query","a"]}' >&log.txt
-	 elif [ $4 -eq 1 ]; then
-		peer chaincode query -C mychannel$ORG -n mycc -c '{"Args":["query","b"]}' >&log.txt
-	 fi
-	 res=$?
+	 
+	 peer chaincode query -C mychannel$ORG -n mycc -c '{"Args":["query","'$3'"]}' >&log.txt
+	 
+	 rc=$?
      set +x
-     test $res -eq 0 && VALUE=$(cat log.txt | awk '/Query Result/ {print $NF}')
-     test "$VALUE" = "$EXPECTED_RESULT" && let rc=0
+     VALUE=$(cat log.txt | awk '/Query Result/ {print $NF}')
   done
   echo
   cat log.txt
@@ -353,12 +352,12 @@ chaincodeInvoke () {
 	# lets supply it directly as we know it using the "-o" option
 	if [ -z "$CORE_PEER_TLS_ENABLED" -o "$CORE_PEER_TLS_ENABLED" = "false" ]; then
                 set -x
-		peer chaincode invoke -o orderer.example.com:7050 -C mychannel$ORG -n mycc -c '{"Args":["invoke","a","b","10"]}' >&log.txt
+		peer chaincode invoke -o orderer.example.com:7050 -C mychannel$ORG -n mycc -c '{"Args":["invoke","001","{"record": "healthRecord"}"]}' >&log.txt
 		res=$?
                 set +x
 	else
                 set -x
-		peer chaincode invoke -o orderer.example.com:7050  --tls $CORE_PEER_TLS_ENABLED --cafile $ORDERER_CA -C mychannel$ORG -n mycc -c '{"Args":["invoke","a","b","10"]}' >&log.txt
+		peer chaincode invoke -o orderer.example.com:7050  --tls $CORE_PEER_TLS_ENABLED --cafile $ORDERER_CA -C mychannel$ORG -n mycc -c '{"Args":["invoke","001","{"record": "healthRecord"}"]}' >&log.txt
 		res=$?
                 set +x
 	fi
