@@ -128,22 +128,22 @@ echo "Installing chaincode on peer1.pl1..."
 installChaincode 1 4
 
 echo "Instantiating chaincode on peer0.org1..."
-instantiateChaincode 0 1 '"record1","{\"name\":\"name\",\"name1\":\"name1\"}"'
+instantiateChaincode 0 1 '"info","{\"org\":\"Hospital_1\",\"logo\":\"blob_1\",\"source\":\"Hospital_1\"}"'
 echo "Instantiating chaincode on peer0.org2..."
-instantiateChaincode 0 2 '"record2","{\"name2\":\"name2\",\"name3\":\"name3\"}"'
+instantiateChaincode 0 2 '"info","{\"org\":\"Hospital_2\",\"logo\":\"blob_2\",\"source\":\"Hospital_2\"}"'
 echo "Instantiating chaincode on peer0.org3..."
-instantiateChaincode 0 3 '"init","{}"'
+instantiateChaincode 0 3 '"info","{\"org\":\"Hospital_3\",\"logo\":\"blob_3\",\"source\":\"Hospital_3\"}"'
 echo "Instantiating chaincode on peer0.pl1..."
-instantiateChaincode 0 4 '"init","{}"'
+instantiateChaincode 0 4 '"info","{\"name\":\"Patient_1\",\"Picture\":\"blob_4\",\"source\":\"Patient_1\"}"'
 
-echo "QUERY peer0.org1"
-chaincodeQuery 0 1 "record1"
-echo "QUERY peer1.org1"
-chaincodeQuery 1 1 "record1"
-echo "QUERY peer0.org2"
-chaincodeQuery 0 2 "record2"
-echo "QUERY a peer1.org2"
-chaincodeQuery 1 2 "record2"
+# echo "QUERY peer0.org1"
+# chaincodeQuery 0 1 "record1"
+# echo "QUERY peer1.org1"
+# chaincodeQuery 1 1 "record1"
+# echo "QUERY peer0.org2"
+# chaincodeQuery 0 2 "record2"
+# echo "QUERY a peer1.org2"
+# chaincodeQuery 1 2 "record2"
 
 # # Invoke chaincode on peer0.org1
 # echo "Sending invoke transaction on peer0.org1..."

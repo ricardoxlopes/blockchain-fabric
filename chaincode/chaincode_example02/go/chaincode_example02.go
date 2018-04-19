@@ -1,30 +1,10 @@
-/*
-Copyright IBM Corp. 2016 All Rights Reserved.
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-		 http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-*/
-
 package main
-
-//WARNING - this chaincode's ID is hard-coded in chaincode_example04 to illustrate one way of
-//calling chaincode from a chaincode. If this example is modified, chaincode_example04.go has
-//to be modified as well with the new ID of chaincode_example02.
-//chaincode_example05 show's how chaincode ID can be passed in as a parameter instead of
-//hard-coding.
 
 import (
 	"fmt"
-
+	"bytes"
+	"encoding/json"
+	"strconv"
 	"github.com/hyperledger/fabric/core/chaincode/shim"
 	pb "github.com/hyperledger/fabric/protos/peer"
 )
@@ -40,8 +20,6 @@ func (t *SimpleChaincode) Init(stub shim.ChaincodeStubInterface) pb.Response {
 	var healthRecordId, healthRecordData string
 	var err error
 	
-	fmt.Println(len(args))
-
 	if len(args) != 2 && len(args) != 0 {
 		return shim.Error("Incorrect number of arguments. Expecting 2")
 	}
@@ -67,35 +45,48 @@ func (t *SimpleChaincode) Invoke(stub shim.ChaincodeStubInterface) pb.Response {
 	fmt.Println("ex02 Invoke")
 	function, args := stub.GetFunctionAndParameters()
 	if function == "invoke" {
-		// Make payment of X units from A to B
 		return t.invoke(stub, args)
 	} else if function == "delete" {
 		// Deletes an entity from its state
 		return t.delete(stub, args)
 	} else if function == "query" {
-		// the old "Query" is now implemtned in invoke
 		return t.query(stub, args)
+	} else if function == "rich_query" {
+		return t.rich_query(stub, args[0])
 	}
 
 	return shim.Error("Invalid invoke function name. Expecting \"invoke\" \"delete\" \"query\"")
 }
 
-// Transaction makes payment of X units from A to B
 func (t *SimpleChaincode) invoke(stub shim.ChaincodeStubInterface, args []string) pb.Response {
 	var healthRecordId string          // Transaction ID
-	var healthRecordData string          // Transaction value
+	var healthRecordData map[string]interface{}          // Transaction value
 	var err error
+	var newVar []byte;
 
-	if len(args) != 2 {
-		return shim.Error("Incorrect number of arguments. Expecting 2")
+	if len(args) != 1 {
+	 	return shim.Error("Incorrect number of arguments. Expecting 1")
 	}
 
+	var healthRecord map[string]interface{};
+	jsonValid, _ := strconv.Unquote(args[0])
+	
+    if err = json.Unmarshal([]byte(jsonValid), &healthRecord); err != nil {
+        return shim.Error("Failed to UNMARSHAL")
+	}
 	// Perform the execution
-	healthRecordId = args[0]
-	healthRecordData = args[1]	
+	
+	healthRecordId = healthRecord["Key"].(string);
+	healthRecordData = healthRecord["Record"].(map[string]interface{});
+	
+	newVar, err = json.Marshal(healthRecordData)
 
-	// Write the state back to the ledger
-	err = stub.PutState(healthRecordId, []byte(healthRecordData))
+	if err != nil {
+    	return shim.Error("Failed to Marshal")
+	}
+	
+	// Write the state back to the ledgerS
+	err = stub.PutState(healthRecordId, []byte(newVar))
 	
 	if err != nil {
 		return shim.Error(err.Error())
@@ -144,9 +135,49 @@ func (t *SimpleChaincode) query(stub shim.ChaincodeStubInterface, args []string)
 		return shim.Error(jsonResp)
 	}
 
-	jsonResp := "{\"Health record ID\":\"" + healthRecordId + "\",\"DATA\":\"" + string(Avalbytes) + "\"}"
-	fmt.Printf("Query Response:%s\n", jsonResp)
+	// jsonResp := "{\"Health record ID\":\"" + healthRecordId + "\",\"DATA\":\"" + string(Avalbytes) + "\"}"
+	// fmt.Printf("Query Response:%s\n", jsonResp)
 	return shim.Success(Avalbytes)
+}
+
+func (t *SimpleChaincode) rich_query(stub shim.ChaincodeStubInterface, queryString string) pb.Response {
+    fmt.Printf("- getQueryResultForQueryString queryString:\n%s\n", queryString)
+
+	var err error
+
+	resultsIterator, err:= stub.GetQueryResult(queryString)
+    defer resultsIterator.Close()
+    if err != nil {
+        return shim.Error("Incorrect")
+    }
+    // buffer is a JSON array containing QueryRecords
+    var buffer bytes.Buffer
+    buffer.WriteString("[")
+    bArrayMemberAlreadyWritten:= false
+    for resultsIterator.HasNext() {
+        queryResponse,
+        err:= resultsIterator.Next()
+        if err != nil {
+            return shim.Error("Incorrect number of arguments. Expecting 2")
+        }
+        // Add a comma before array members, suppress it for the first array member
+        if bArrayMemberAlreadyWritten == true {
+            buffer.WriteString(",")
+        }
+        buffer.WriteString("{\"Key\":")
+        buffer.WriteString("\"")
+        buffer.WriteString(queryResponse.Key)
+        buffer.WriteString("\"")
+        buffer.WriteString(", \"Record\":")
+        // Record is a JSON object, so we write as-is
+        buffer.WriteString(string(queryResponse.Value))
+        buffer.WriteString("}")
+        bArrayMemberAlreadyWritten = true
+    }
+    buffer.WriteString("]")
+	fmt.Printf("- getQueryResultForQueryString queryResult:\n%s\n", buffer.String())
+	
+	return shim.Success(buffer.Bytes())
 }
 
 func main() {
