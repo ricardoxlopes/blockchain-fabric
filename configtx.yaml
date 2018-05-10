@@ -24,60 +24,26 @@ Profiles:
             Capabilities:
                 <<: *OrdererCapabilities
         Consortiums:
-            SampleConsortium1:
+            MyConsortium:
                 Organizations:
                     - *Org1
-                    - *Pl1
-            SampleConsortium2:
-                Organizations:  
                     - *Org2
-                    - *Pl1
-            SampleConsortium3:
-                Organizations:
                     - *Org3
                     - *Pl1
-            SampleConsortium4:
-                Organizations:
-                    - *Pl1
 
-    Org1Channel:
-        Consortium: SampleConsortium1
+    MyConsortiumChannel:
+        Consortium: MyConsortium
         Application:
             <<: *ApplicationDefaults
             Organizations:
                 - *Org1
-                - *Pl1
-            Capabilities:
-                <<: *ApplicationCapabilities
-
-    Org2Channel:
-        Consortium: SampleConsortium2
-        Application:
-            <<: *ApplicationDefaults
-            Organizations:
                 - *Org2
-                - *Pl1
-            Capabilities:
-                <<: *ApplicationCapabilities
-
-    Org3Channel:
-        Consortium: SampleConsortium3
-        Application:
-            <<: *ApplicationDefaults
-            Organizations:
                 - *Org3
                 - *Pl1
             Capabilities:
                 <<: *ApplicationCapabilities
 
-    Pl1Channel:
-        Consortium: SampleConsortium4
-        Application:
-            <<: *ApplicationDefaults
-            Organizations:
-                - *Pl1
-            Capabilities:
-                <<: *ApplicationCapabilities
+
 
 ################################################################################
 #

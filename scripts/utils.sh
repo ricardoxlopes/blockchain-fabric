@@ -56,7 +56,7 @@ setGlobals () {
 		else
 			CORE_PEER_ADDRESS=peer1.org3.example.com:7051
 		fi
-	elif [ $ORG -eq 4 -o $ORG -eq 5 -o $ORG -eq 6 -o $ORG -eq 7 ] ; then
+	elif [ $ORG -eq 4 ] ; then
 		CORE_PEER_LOCALMSPID="Pl1MSP"
 		CORE_PEER_TLS_ROOTCERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/pl1.example.com/peers/peer0.pl1.example.com/tls/ca.crt
 		CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/pl1.example.com/users/Admin@pl1.example.com/msp
@@ -80,12 +80,12 @@ updateAnchorPeers() {
 
   if [ -z "$CORE_PEER_TLS_ENABLED" -o "$CORE_PEER_TLS_ENABLED" = "false" ]; then
                 set -x
-		peer channel update -o orderer.example.com:7050 -c mychannel$ORG -f ./channel-artifacts/${CORE_PEER_LOCALMSPID}anchors.tx >&log.txt
+		peer channel update -o orderer.example.com:7050 -c mychannel -f ./channel-artifacts/${CORE_PEER_LOCALMSPID}anchors.tx >&log.txt
 		res=$?
                 set +x
   else
                 set -x
-		peer channel update -o orderer.example.com:7050 -c mychannel$ORG -f ./channel-artifacts/${CORE_PEER_LOCALMSPID}anchors.tx --tls $CORE_PEER_TLS_ENABLED --cafile $ORDERER_CA >&log.txt
+		peer channel update -o orderer.example.com:7050 -c mychannel -f ./channel-artifacts/${CORE_PEER_LOCALMSPID}anchors.tx --tls $CORE_PEER_TLS_ENABLED --cafile $ORDERER_CA >&log.txt
 		res=$?
                 set +x
   fi
@@ -102,28 +102,7 @@ joinChannelWithRetry () {
 	ORG=$2
 	setGlobals $PEER $ORG
 	
-	if [ $2 -eq 1 ]
-    then
-		BLOCK_NAME="mychannel1.block"
-    elif [ $2 -eq 2 ]
-    then
-		BLOCK_NAME="mychannel2.block"
-	elif [ $2 -eq 3 ]
-    then
-		BLOCK_NAME="mychannel3.block"
-	elif [ $2 -eq 4 ]
-	then
-		BLOCK_NAME="mychannel4.block"
-	elif [ $2 -eq 5 ]
-	then
-		BLOCK_NAME="mychannel1.block"
-	elif [ $2 -eq 6 ]
-	then
-		BLOCK_NAME="mychannel3.block"
-	elif [ $2 -eq 7 ]
-	then
-		BLOCK_NAME="mychannel2.block"
-	fi
+	BLOCK_NAME="mychannel.block"
 
         set -x
 	peer channel join -b $BLOCK_NAME  >&log.txt
@@ -165,77 +144,25 @@ instantiateChaincode () {
 
 	setGlobals $PEER $ORG
 	VERSION="1.0"
-	
-	if [ $2 -eq 1 ]
-    then
-		CHANNEL_NAME="mychannel1"
+
+	CHANNEL_NAME="mychannel"
+
+	# while 'peer chaincode' command can get the orderer endpoint from the peer (if join was successful),
+	# lets supply it directly as we know it using the "-o" option
+	if [ -z "$CORE_PEER_TLS_ENABLED" -o "$CORE_PEER_TLS_ENABLED" = "false" ]; then
+				set -x
 		
-		# while 'peer chaincode' command can get the orderer endpoint from the peer (if join was successful),
-		# lets supply it directly as we know it using the "-o" option
-		if [ -z "$CORE_PEER_TLS_ENABLED" -o "$CORE_PEER_TLS_ENABLED" = "false" ]; then
-					set -x
-			
-			peer chaincode instantiate -o orderer.example.com:7050 -C $CHANNEL_NAME -n mycc -l ${LANGUAGE} -v $VERSION -c '{"Args":['$DATA']}'  -P "OR ('Org1MSP.peer','Pl1MSP.client')" >&log.txt
-			res=$?
-					set +x
-		else
-					set -x
-			peer chaincode instantiate -o orderer.example.com:7050 --tls $CORE_PEER_TLS_ENABLED --cafile $ORDERER_CA -C $CHANNEL_NAME -n mycc -l ${LANGUAGE} -v $VERSION -c '{"Args":['$DATA']}' -P "OR	('Org1MSP.peer','Pl1MSP.client')" >&log.txt
-			res=$?
-					set +x
-		fi
-
-    elif [ $2 -eq 2 ]
-    then
-		CHANNEL_NAME="mychannel2"
-
-		# while 'peer chaincode' command can get the orderer endpoint from the peer (if join was successful),
-		# lets supply it directly as we know it using the "-o" option
-		if [ -z "$CORE_PEER_TLS_ENABLED" -o "$CORE_PEER_TLS_ENABLED" = "false" ]; then
-					set -x
-			peer chaincode instantiate -o orderer.example.com:7050 -C $CHANNEL_NAME -n mycc -l ${LANGUAGE} -v ${VERSION} -c '{"Args":['$DATA']}' -P "OR	('Org2MSP.peer','Pl1MSP.client')" >&log.txt
-			res=$?
-					set +x
-		else
-					set -x
-			peer chaincode instantiate -o orderer.example.com:7050 --tls $CORE_PEER_TLS_ENABLED --cafile $ORDERER_CA -C $CHANNEL_NAME -n mycc -l ${LANGUAGE} -v ${VERSION}-c '{"Args":['$DATA']}' -P "OR	('Org2MSP.peer','Pl1MSP.client')" >&log.txt
-			res=$?
-					set +x
-		fi
-	elif [ $2 -eq 3 ]
-    then
-		CHANNEL_NAME="mychannel3"
-
-		# while 'peer chaincode' command can get the orderer endpoint from the peer (if join was successful),
-		# lets supply it directly as we know it using the "-o" option
-		if [ -z "$CORE_PEER_TLS_ENABLED" -o "$CORE_PEER_TLS_ENABLED" = "false" ]; then
-					set -x
-			peer chaincode instantiate -o orderer.example.com:7050 -C $CHANNEL_NAME -n mycc -l ${LANGUAGE} -v ${VERSION} -c '{"Args":['$DATA']}'  -P "OR	('Org3MSP.peer','Pl1MSP.peer')" >&log.txt
-			res=$?
-					set +x
-		else
-					set -x
-			peer chaincode instantiate -o orderer.example.com:7050 --tls $CORE_PEER_TLS_ENABLED --cafile $ORDERER_CA -C $CHANNEL_NAME -n mycc -l ${LANGUAGE} -v ${VERSION} -c '{"Args":['$DATA']}'  -P "OR	('Org3MSP.peer','Pl1MSP.peer')" >&log.txt
-			res=$?
-					set +x
-		fi
+		peer chaincode instantiate -o orderer.example.com:7050 -C $CHANNEL_NAME -n mycc -l ${LANGUAGE} -v $VERSION -c '{"Args":['$DATA']}'  -P "OR ('Org1MSP.peer','Pl1MSP.client')" >&log.txt
+		res=$?
+				set +x
 	else
-		CHANNEL_NAME="mychannel4"
-	
-		# while 'peer chaincode' command can get the orderer endpoint from the peer (if join was successful),
-		# lets supply it directly as we know it using the "-o" option
-		if [ -z "$CORE_PEER_TLS_ENABLED" -o "$CORE_PEER_TLS_ENABLED" = "false" ]; then
-					set -x
-			peer chaincode instantiate -o orderer.example.com:7050 -C $CHANNEL_NAME -n mycc -l ${LANGUAGE} -v ${VERSION} -c '{"Args":['$DATA']}' >&log.txt
-			res=$?
-					set +x
-		else
-					set -x
-			peer chaincode instantiate -o orderer.example.com:7050 --tls $CORE_PEER_TLS_ENABLED --cafile $ORDERER_CA -C $CHANNEL_NAME -n mycc -l ${LANGUAGE} -v ${VERSION} -c '{"Args":['$DATA']}' >&log.txt
-			res=$?
-					set +x
-		fi
+				set -x
+		peer chaincode instantiate -o orderer.example.com:7050 --tls $CORE_PEER_TLS_ENABLED --cafile $ORDERER_CA -C $CHANNEL_NAME -n mycc -l ${LANGUAGE} -v $VERSION -c '{"Args":['$DATA']}' -P "OR	('Org1MSP.peer','Pl1MSP.client')" >&log.txt
+		res=$?
+				set +x
 	fi
+
+
 
 	cat log.txt
 	verifyResult $res "Chaincode instantiation on peer${PEER}.org${ORG} on channel '$CHANNEL_NAME' failed"

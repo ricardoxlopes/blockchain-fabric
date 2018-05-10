@@ -385,9 +385,9 @@ function generateChannelArtifacts() {
   echo "### Generating channels configuration transactions            ###"
   echo "#################################################################"
   
-  CHANNEL_NAME="mychannel1"
+  CHANNEL_NAME="mychannel"
 
-  configtxgen -profile Org1Channel -outputCreateChannelTx ./channel-artifacts/channel1.tx -channelID $CHANNEL_NAME
+  configtxgen -profile MyConsortiumChannel -outputCreateChannelTx ./channel-artifacts/mychannel.tx -channelID $CHANNEL_NAME
   
   if [ "$?" -ne 0 ]; then
     echo "Failed to generate channel configuration transaction 1"
@@ -398,17 +398,9 @@ function generateChannelArtifacts() {
   echo "#################################################################"
   echo "#######    Generating anchor peer update for Org1MSP   ##########"
   echo "#################################################################"
-  configtxgen -profile Org1Channel -outputAnchorPeersUpdate ./channel-artifacts/Org1MSPanchors.tx -channelID $CHANNEL_NAME -asOrg Org1MSP
+  configtxgen -profile MyConsortiumChannel -outputAnchorPeersUpdate ./channel-artifacts/Org1MSPanchors.tx -channelID $CHANNEL_NAME -asOrg Org1MSP
   if [ "$?" -ne 0 ]; then
     echo "Failed to generate anchor peer update for Org1MSP..."
-    exit 1
-  fi
-
-  CHANNEL_NAME="mychannel2"
-  configtxgen -profile Org2Channel -outputCreateChannelTx ./channel-artifacts/channel2.tx -channelID $CHANNEL_NAME
-  
-  if [ "$?" -ne 0 ]; then
-    echo "Failed to generate channel configuration transaction 2"
     exit 1
   fi
   
@@ -416,43 +408,28 @@ function generateChannelArtifacts() {
   echo "#################################################################"
   echo "#######    Generating anchor peer update for Org2MSP   ##########"
   echo "#################################################################"
-  configtxgen -profile Org2Channel -outputAnchorPeersUpdate ./channel-artifacts/Org2MSPanchors.tx -channelID $CHANNEL_NAME -asOrg Org2MSP
+  configtxgen -profile MyConsortiumChannel -outputAnchorPeersUpdate ./channel-artifacts/Org2MSPanchors.tx -channelID $CHANNEL_NAME -asOrg Org2MSP
   if [ "$?" -ne 0 ]; then
     echo "Failed to generate anchor peer update for Org2MSP..."
     exit 1
   fi
 
-  CHANNEL_NAME="mychannel3"
-  configtxgen -profile Org3Channel -outputCreateChannelTx ./channel-artifacts/channel3.tx -channelID $CHANNEL_NAME
-  
-  if [ "$?" -ne 0 ]; then
-    echo "Failed to generate channel configuration transaction 3"
-    exit 1
-  fi
-  
-    echo
+  echo
   echo "#################################################################"
   echo "#######    Generating anchor peer update for Org3MSP   ##########"
   echo "#################################################################"
-  configtxgen -profile Org3Channel -outputAnchorPeersUpdate ./channel-artifacts/Org3MSPanchors.tx -channelID $CHANNEL_NAME -asOrg Org3MSP
+  configtxgen -profile MyConsortiumChannel -outputAnchorPeersUpdate ./channel-artifacts/Org3MSPanchors.tx -channelID $CHANNEL_NAME -asOrg Org3MSP
   if [ "$?" -ne 0 ]; then
     echo "Failed to generate anchor peer update for Org3MSP..."
     exit 1
   fi
 
-  CHANNEL_NAME="mychannel4"
-  configtxgen -profile Pl1Channel -outputCreateChannelTx ./channel-artifacts/channel4.tx -channelID $CHANNEL_NAME
-  
-  if [ "$?" -ne 0 ]; then
-    echo "Failed to generate channel configuration transaction 4"
-    exit 1
-  fi
   
     echo
   echo "#################################################################"
   echo "#######    Generating anchor peer update for Pl1MSP   ##########"
   echo "#################################################################"
-  configtxgen -profile Pl1Channel -outputAnchorPeersUpdate ./channel-artifacts/Pl1MSPanchors.tx -channelID $CHANNEL_NAME -asOrg Pl1MSP
+  configtxgen -profile MyConsortiumChannel -outputAnchorPeersUpdate ./channel-artifacts/Pl1MSPanchors.tx -channelID $CHANNEL_NAME -asOrg Pl1MSP
   if [ "$?" -ne 0 ]; then
     echo "Failed to generate anchor peer update for Pl1MSP..."
     exit 1

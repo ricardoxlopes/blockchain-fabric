@@ -40,18 +40,18 @@ createChannel() {
 
 	if [ -z "$CORE_PEER_TLS_ENABLED" -o "$CORE_PEER_TLS_ENABLED" = "false" ]; then
                 set -x
-		peer channel create -o orderer.example.com:7050 -c mychannel$ORG -f ./channel-artifacts/channel$ORG.tx >&log.txt
+		peer channel create -o orderer.example.com:7050 -c mychannel -f ./channel-artifacts/mychannel.tx >&log.txt
 		res=$?
                 set +x
 	else
 				set -x
-		peer channel create -o orderer.example.com:7050 -c mychannel$ORG -f ./channel-artifacts/channel$ORG.tx --tls $CORE_PEER_TLS_ENABLED --cafile $ORDERER_CA >&log.txt
+		peer channel create -o orderer.example.com:7050 -c mychannel -f ./channel-artifacts/mychannel.tx --tls $CORE_PEER_TLS_ENABLED --cafile $ORDERER_CA >&log.txt
 		res=$?
 				set +x
 	fi
 	cat log.txt
-	verifyResult $res "Channel mychannel$ORG creation failed"
-	echo "===================== Channel mychannel$ORG is created successfully ===================== "
+	verifyResult $res "Channel mychannel creation failed"
+	echo "===================== Channel mychannel is created successfully ===================== "
 	echo
 }
 
@@ -59,43 +59,29 @@ joinChannel () {
 	for org in 1 2; do
 	    for peer in 0 1; do
 			joinChannelWithRetry $peer $org
-			echo "===================== peer${peer}.org${org} joined on the channel mychannel$org ===================== "
+			echo "===================== peer${peer}.org${org} joined on the mychannel ===================== "
 			sleep $DELAY
 			echo
 	    done
 	done
-	joinChannelWithRetry 0 5
-	echo "===================== peer0.org5 joined on the channel mychannel1 ===================== "
-			sleep $DELAY
-			echo
-	joinChannelWithRetry 0 7
-	echo "===================== peer0.org5 joined on the channel mychannel2 ===================== "
-			sleep $DELAY
-			echo
-	joinChannelWithRetry 0 6
-	echo "===================== peer0.org5 joined on the channel mychannel3 ===================== "
-			sleep $DELAY
-			echo
+	
 	joinChannelWithRetry 0 3
-	echo "===================== peer0.org3 joined on the channel mychannel3 ===================== "
-			sleep $DELAY
-			echo
+	echo "===================== peer0.org3 joined on the mychannel ===================== "
+	sleep $DELAY
+	
+	echo
 	joinChannelWithRetry 0 4
-	echo "===================== peer0.org4 joined on the channel mychannel4 ===================== "
-			sleep $DELAY
-			echo
+	echo "===================== peer0.pl1 joined on the mychannel ===================== "
+	sleep $DELAY
+	
+	echo
 	joinChannelWithRetry 1 4
-	echo "===================== peer1.org4 joined on the channel mychannel4 ===================== "
-			sleep $DELAY
-			echo
+	echo "===================== peer1.pl1 joined on the mychannel ===================== "
 }
 
 ## Create channel
 echo "Creating channel..."
 createChannel 0 1
-createChannel 0 2
-createChannel 0 3
-createChannel 0 4
 
 ## Join all the peers to the channel
 echo "Having all peers join the channel..."
@@ -128,13 +114,13 @@ echo "Installing chaincode on peer1.pl1..."
 installChaincode 1 4
 
 echo "Instantiating chaincode on peer0.org1..."
-instantiateChaincode 0 1 '"info","{\"org\":\"Hospital_1\",\"logo\":\"blob_1\",\"source\":\"Hospital_1\"}"'
-echo "Instantiating chaincode on peer0.org2..."
-instantiateChaincode 0 2 '"info","{\"org\":\"Hospital_2\",\"logo\":\"blob_2\",\"source\":\"Hospital_2\"}"'
-echo "Instantiating chaincode on peer0.org3..."
-instantiateChaincode 0 3 '"info","{\"org\":\"Hospital_3\",\"logo\":\"blob_3\",\"source\":\"Hospital_3\"}"'
-echo "Instantiating chaincode on peer0.pl1..."
-instantiateChaincode 0 4 '"info","{\"name\":\"Patient_1\",\"Picture\":\"blob_4\",\"source\":\"Patient_1\"}"'
+instantiateChaincode 0 1 '"info","{\"org\":\"Hospital_2\",\"logo\":\"blob_2\",\"source\":\"Hospital_2\"}"'
+# echo "Instantiating chaincode on peer0.org2..."
+# instantiateChaincode 0 2 '"info1","{\"org\":\"Hospital_2\",\"logo\":\"blob_2\",\"source\":\"Hospital_2\"}"'
+# echo "Instantiating chaincode on peer0.org3..."
+# instantiateChaincode 0 3 '"info2","{\"org\":\"Hospital_3\",\"logo\":\"blob_3\",\"source\":\"Hospital_3\"}"'
+# echo "Instantiating chaincode on peer0.pl1..."
+# instantiateChaincode 0 4 '"info3","{\"name\":\"Patient_1\",\"Picture\":\"blob_4\",\"source\":\"Patient_1\"}"'
 
 # echo "QUERY peer0.org1"
 # chaincodeQuery 0 1 "record1"
