@@ -20,6 +20,7 @@ verifyResult () {
 # Set OrdererOrg.Admin globals
 setOrdererGlobals() {
         CORE_PEER_LOCALMSPID="OrdererMSP"
+		# ORDERER_GENERAL_TLS_CLIENTAUTHREQUIRED=true ??
         CORE_PEER_TLS_ROOTCERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem
         CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/example.com/users/Admin@example.com/msp
 }
@@ -30,6 +31,7 @@ setGlobals () {
 
 	if [ $ORG -eq 1 ] ; then
 		CORE_PEER_LOCALMSPID="Org1MSP"
+		# CORE_PEER_TLS_CLIENTAUTHREQUIRED=true
 		CORE_PEER_TLS_ROOTCERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt
 		CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp
 		if [ $PEER -eq 0 ]; then
@@ -39,6 +41,7 @@ setGlobals () {
 		fi
 	elif [ $ORG -eq 2 ] ; then
 		CORE_PEER_LOCALMSPID="Org2MSP"
+		# CORE_PEER_TLS_CLIENTAUTHREQUIRED=true
 		CORE_PEER_TLS_ROOTCERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/tls/ca.crt
 		CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org2.example.com/users/Admin@org2.example.com/msp
 		if [ $PEER -eq 0 ]; then
@@ -49,6 +52,7 @@ setGlobals () {
 
 	elif [ $ORG -eq 3 ] ; then
 		CORE_PEER_LOCALMSPID="Org3MSP"
+		# CORE_PEER_TLS_CLIENTAUTHREQUIRED=true
 		CORE_PEER_TLS_ROOTCERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org3.example.com/peers/peer0.org3.example.com/tls/ca.crt
 		CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org3.example.com/users/Admin@org3.example.com/msp
 		if [ $PEER -eq 0 ]; then
@@ -58,6 +62,7 @@ setGlobals () {
 		fi
 	elif [ $ORG -eq 4 ] ; then
 		CORE_PEER_LOCALMSPID="Pl1MSP"
+		# CORE_PEER_TLS_CLIENTAUTHREQUIRED=true
 		CORE_PEER_TLS_ROOTCERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/pl1.example.com/peers/peer0.pl1.example.com/tls/ca.crt
 		CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/pl1.example.com/users/Admin@pl1.example.com/msp
 		if [ $PEER -eq 0 ]; then
@@ -73,25 +78,21 @@ setGlobals () {
 }
 
 
+
 updateAnchorPeers() {
   PEER=$1
   ORG=$2
   setGlobals $PEER $ORG
 
   if [ -z "$CORE_PEER_TLS_ENABLED" -o "$CORE_PEER_TLS_ENABLED" = "false" ]; then
-                set -x
-		peer channel update -o orderer.example.com:7050 -c mychannel -f ./channel-artifacts/${CORE_PEER_LOCALMSPID}anchors.tx >&log.txt
-		res=$?
-                set +x
+		peer channel update -o orderer0.example.com:7050 -c $CHANNEL_NAME -f ./channel-artifacts/${CORE_PEER_LOCALMSPID}anchors.tx >&log.txt
   else
-                set -x
-		peer channel update -o orderer.example.com:7050 -c mychannel -f ./channel-artifacts/${CORE_PEER_LOCALMSPID}anchors.tx --tls $CORE_PEER_TLS_ENABLED --cafile $ORDERER_CA >&log.txt
-		res=$?
-                set +x
+		peer channel update -o orderer0.example.com:7050 -c $CHANNEL_NAME -f ./channel-artifacts/${CORE_PEER_LOCALMSPID}anchors.tx --tls $CORE_PEER_TLS_ENABLED --cafile $ORDERER_CA >&log.txt
   fi
+	res=$?
 	cat log.txt
 	verifyResult $res "Anchor peer update failed"
-	echo "===================== Anchor peers for org \"$CORE_PEER_LOCALMSPID\" on mychannel$ORG is updated successfully ===================== "
+	echo "===================== Anchor peers for org \"$CORE_PEER_LOCALMSPID\" on \"$CHANNEL_NAME\" is updated successfully ===================== "
 	sleep $DELAY
 	echo
 }
@@ -109,6 +110,7 @@ joinChannelWithRetry () {
 	res=$?
         set +x
 	cat log.txt
+	cat log.txt
 	if [ $res -ne 0 -a $COUNTER -lt $MAX_RETRY ]; then
 		COUNTER=` expr $COUNTER + 1`
 		echo "peer${PEER}.org${ORG} failed to join the channel, Retry after $DELAY seconds"
@@ -125,18 +127,14 @@ installChaincode () {
 	ORG=$2
 	setGlobals $PEER $ORG
 	VERSION="1.0"
-        set -x
-
 	peer chaincode install -n mycc -v ${VERSION} -l ${LANGUAGE} -p ${CC_SRC_PATH} >&log.txt
 	res=$?
-        set +x
 	cat log.txt
 	verifyResult $res "Chaincode installation on peer${PEER}.org${ORG} has Failed"
 	echo "===================== Chaincode is installed on peer${PEER}.org${ORG} ===================== "
 	echo
 }
 
-#TODO CICLO #change chaincode names
 instantiateChaincode () {
 	PEER=$1
 	ORG=$2
@@ -152,12 +150,12 @@ instantiateChaincode () {
 	if [ -z "$CORE_PEER_TLS_ENABLED" -o "$CORE_PEER_TLS_ENABLED" = "false" ]; then
 				set -x
 		
-		peer chaincode instantiate -o orderer.example.com:7050 -C $CHANNEL_NAME -n mycc -l ${LANGUAGE} -v $VERSION -c '{"Args":['$DATA']}'  -P "OR ('Org1MSP.peer','Pl1MSP.client')" >&log.txt
+		peer chaincode instantiate -o orderer0.example.com:7050 -C $CHANNEL_NAME -n mycc -l ${LANGUAGE} -v $VERSION -c '{"Args":['$DATA']}'  -P "OR ('Org1MSP.peer','Pl1MSP.client')" >&log.txt
 		res=$?
 				set +x
 	else
 				set -x
-		peer chaincode instantiate -o orderer.example.com:7050 --tls $CORE_PEER_TLS_ENABLED --cafile $ORDERER_CA -C $CHANNEL_NAME -n mycc -l ${LANGUAGE} -v $VERSION -c '{"Args":['$DATA']}' -P "OR	('Org1MSP.peer','Pl1MSP.client')" >&log.txt
+		peer chaincode instantiate -o orderer0.example.com:7050 --tls $CORE_PEER_TLS_ENABLED --cafile $ORDERER_CA -C $CHANNEL_NAME -n mycc -l ${LANGUAGE} -v $VERSION -c '{"Args":['$DATA']}' -P "OR	('Org1MSP.peer','Pl1MSP.client')" >&log.txt
 		res=$?
 				set +x
 	fi
@@ -175,10 +173,8 @@ upgradeChaincode () {
     ORG=$2
     setGlobals $PEER $ORG
 
-    set -x
-    peer chaincode upgrade -o orderer.example.com:7050 --tls $CORE_PEER_TLS_ENABLED --cafile $ORDERER_CA -C $CHANNEL_NAME -n mycc -v 2.0 -c '{"Args":["init","a","90","b","210"]}' -P "OR ('Org1MSP.peer','Org2MSP.peer','Org3MSP.peer')"
+    peer chaincode upgrade -o orderer0.example.com:7050 --tls $CORE_PEER_TLS_ENABLED --cafile $ORDERER_CA -C $CHANNEL_NAME -n mycc -v 2.0 -c '{"Args":["init","a","90","b","210"]}' -P "OR ('Org1MSP.member','Org2MSP.member','Org3MSP.member')"
     res=$?
-	set +x
     cat log.txt
     verifyResult $res "Chaincode upgrade on org${ORG} peer${PEER} has Failed"
     echo "===================== Chaincode is upgraded on org${ORG} peer${PEER} ===================== "
@@ -189,8 +185,8 @@ chaincodeQuery () {
   PEER=$1
   ORG=$2
   setGlobals $PEER $ORG
-  
-  echo "===================== Querying on peer${PEER}.org${ORG} on channel mychannel$ORG ... ===================== "
+  EXPECTED_RESULT=$3
+  echo "===================== Querying on peer${PEER}.org${ORG} on channel '$CHANNEL_NAME'... ===================== "
   local rc=1
   local starttime=$(date +%s)
 
@@ -200,18 +196,14 @@ chaincodeQuery () {
   do
      sleep $DELAY
      echo "Attempting to Query peer${PEER}.org${ORG} ...$(($(date +%s)-starttime)) secs"
-     set -x
-	 
-	 peer chaincode query -C mychannel$ORG -n mycc -c '{"Args":["query","'$3'"]}' >&log.txt
-	 
-	 rc=$?
-     set +x
-     VALUE=$(cat log.txt | awk '/Query Result/ {print $NF}')
+     peer chaincode query -C $CHANNEL_NAME -n mycc -c '{"Args":["query","a"]}' >&log.txt
+     test $? -eq 0 && VALUE=$(cat log.txt | awk '/Query Result/ {print $NF}')
+     test "$VALUE" = "$EXPECTED_RESULT" && let rc=0
   done
   echo
   cat log.txt
   if test $rc -eq 0 ; then
-	echo "===================== Query on peer${PEER}.org${ORG} on mychannel$ORG is successful ===================== "
+	echo "===================== Query on peer${PEER}.org${ORG} on channel '$CHANNEL_NAME' is successful ===================== "
   else
 	echo "!!!!!!!!!!!!!!! Query result on peer${PEER}.org${ORG} is INVALID !!!!!!!!!!!!!!!!"
         echo "================== ERROR !!! FAILED to execute End-2-End Scenario =================="
@@ -219,6 +211,7 @@ chaincodeQuery () {
 	exit 1
   fi
 }
+
 
 # fetchChannelConfig <channel_id> <output_json>
 # Writes the current channel config for a given channel to a JSON file

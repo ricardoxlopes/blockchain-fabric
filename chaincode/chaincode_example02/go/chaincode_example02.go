@@ -17,6 +17,7 @@ func (t *SimpleChaincode) Init(stub shim.ChaincodeStubInterface) pb.Response {
 	fmt.Println("Chaincode ex02 Init")
 	
 	args := stub.GetArgs()
+	
 	var healthRecordId, healthRecordData string
 	var err error
 	

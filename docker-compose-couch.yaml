@@ -6,10 +6,7 @@
 version: '2'
 
 networks:
-  net1:
-  net2:
-  net3:
-  net4:
+  byfn:
 
 services:
   couchdb1:
@@ -25,7 +22,7 @@ services:
     ports:
       - "5984:5984"
     networks:
-      - net1
+      - byfn
 
   peer0.org1.example.com:
     environment:
@@ -52,7 +49,7 @@ services:
     ports:
       - "6984:5984"
     networks:
-      - net1
+      - byfn
 
   peer1.org1.example.com:
     environment:
@@ -79,7 +76,7 @@ services:
     ports:
       - "7984:5984"
     networks:
-      - net2
+      - byfn
 
   peer0.org2.example.com:
     environment:
@@ -106,7 +103,7 @@ services:
     ports:
       - "8984:5984"
     networks:
-      - net2
+      - byfn
 
   peer1.org2.example.com:
     environment:
@@ -133,7 +130,7 @@ services:
     ports:
       - "9984:5984"
     networks:
-      - net3
+      - byfn
 
   peer0.org3.example.com:
     environment:
@@ -160,7 +157,7 @@ services:
     ports:
       - "10984:5984"
     networks:
-      - net4
+      - byfn
 
   peer0.pl1.example.com:
     environment:
@@ -187,7 +184,7 @@ services:
     ports:
       - "11984:5984"
     networks:
-      - net4
+      - byfn
 
   peer1.pl1.example.com:
     environment:
