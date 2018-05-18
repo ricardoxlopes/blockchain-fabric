@@ -142,7 +142,7 @@ function networkUp () {
     exit 1
   fi
   # now run the end to end script
-  sleep 12
+  sleep 15
   docker exec cli scripts/script.sh $CHANNEL_NAME $CLI_DELAY $LANGUAGE $CLI_TIMEOUT 
 
   if [ $? -ne 0 ]; then
@@ -168,7 +168,7 @@ function networkDown () {
     #Cleanup images
     removeUnwantedImages
     # remove orderer block and other channel configuration transactions and certs
-    rm -rf channel-artifacts/*.block channel-artifacts/*.tx crypto-config ./org3-artifacts/crypto-config/ channel-artifacts/org3.json
+    # rm -rf channel-artifacts/*.block channel-artifacts/*.tx crypto-config TODO
     # remove the docker-compose yaml file that was customized to the example
     rm -f docker-compose-e2e.yaml
   fi
