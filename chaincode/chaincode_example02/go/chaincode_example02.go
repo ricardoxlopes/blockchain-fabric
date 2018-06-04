@@ -2,83 +2,64 @@ package main
 
 import (
 	"fmt"
-	"bytes"
 	"encoding/json"
-	"strconv"
+	"bytes"
 	"github.com/hyperledger/fabric/core/chaincode/shim"
 	pb "github.com/hyperledger/fabric/protos/peer"
 )
 
-// SimpleChaincode example simple Chaincode implementation
-type SimpleChaincode struct {
+// SmartContract example simple Chaincode implementation
+type SmartContract struct {
+
 }
 
-func (t *SimpleChaincode) Init(stub shim.ChaincodeStubInterface) pb.Response {
-	fmt.Println("Chaincode ex02 Init")
-	
-	args := stub.GetArgs()
-	
-	var healthRecordId, healthRecordData string
-	var err error
-	
-	if len(args) != 2 && len(args) != 0 {
-		return shim.Error("Incorrect number of arguments. Expecting 2")
-	}
-
-	// Initialize the chaincode
-	healthRecordId = string(args[0])
-	healthRecordData = string(args[1])
-
-	if err != nil {
-		return shim.Error("Expecting integer value for asset holding")
-	}
-	
-	// Write the state to the ledger
-	err = stub.PutState(healthRecordId, []byte(healthRecordData))
-	if err != nil {
-		return shim.Error(err.Error())
-	}
-
+func (t *SmartContract) Init(stub shim.ChaincodeStubInterface) pb.Response {
+	fmt.Println("Chaincode ex02 Instantiated")
 	return shim.Success(nil)
 }
 
-func (t *SimpleChaincode) Invoke(stub shim.ChaincodeStubInterface) pb.Response {
+func (t *SmartContract) Invoke(stub shim.ChaincodeStubInterface) pb.Response {
 	fmt.Println("ex02 Invoke")
-	function, args := stub.GetFunctionAndParameters()
+	function, params := stub.GetFunctionAndParameters()
+	fmt.Println("function "+function)
+	fmt.Println("params ",params)
+	
 	if function == "invoke" {
-		return t.invoke(stub, args)
+		return t.invoke(stub, params)
 	} else if function == "delete" {
 		// Deletes an entity from its state
-		return t.delete(stub, args)
+		return t.delete(stub, params)
 	} else if function == "query" {
-		return t.query(stub, args)
+		return t.query(stub, params)
 	} else if function == "rich_query" {
-		return t.rich_query(stub, args[0])
+		return t.rich_query(stub, params)
 	}
 
 	return shim.Error("Invalid invoke function name. Expecting \"invoke\" \"delete\" \"query\"")
 }
 
-func (t *SimpleChaincode) invoke(stub shim.ChaincodeStubInterface, args []string) pb.Response {
+func (t *SmartContract) invoke(stub shim.ChaincodeStubInterface,args []string) pb.Response {
 	var healthRecordId string          // Transaction ID
 	var healthRecordData map[string]interface{}          // Transaction value
 	var err error
 	var newVar []byte;
 
-	if len(args) != 1 {
-	 	return shim.Error("Incorrect number of arguments. Expecting 1")
+	if len(args) != 2 {
+	 	return shim.Error("Incorrect number of arguments. Expecting 2")
 	}
 
 	var healthRecord map[string]interface{};
-	jsonValid, _ := strconv.Unquote(args[0])
+	// jsonValid, _ := strconv.Unquote(args)
 	
-    if err = json.Unmarshal([]byte(jsonValid), &healthRecord); err != nil {
+    if err = json.Unmarshal([]byte(args[1]), &healthRecord); err != nil {
+		fmt.Println("err")
+		fmt.Println(err)
         return shim.Error("Failed to UNMARSHAL")
 	}
 	// Perform the execution
 	
-	healthRecordId = healthRecord["Key"].(string);
-	healthRecordData = healthRecord["Record"].(map[string]interface{});
+	healthRecordId = args[0];
+	healthRecordData = healthRecord;
 	
 	newVar, err = json.Marshal(healthRecordData)
 
@@ -93,32 +74,33 @@ func (t *SimpleChaincode) invoke(stub shim.ChaincodeStubInterface, args []string
 		return shim.Error(err.Error())
 	}
 
-	return shim.Success(nil)
+return shim.Success(nil)
 }
 
 // Deletes an entity from state
-func (t *SimpleChaincode) delete(stub shim.ChaincodeStubInterface, args []string) pb.Response {
-	if len(args) != 1 {
-		return shim.Error("Incorrect number of arguments. Expecting 1")
-	}
+func (t *SmartContract) delete(stub shim.ChaincodeStubInterface, args []string) pb.Response {
+	// if len(args) != 1 {
+	// 	return shim.Error("Incorrect number of arguments. Expecting 1")
+	// }
 
-	A := args[0]
+	// A := args[0]
 
-	// Delete the key from the state in ledger
-	err := stub.DelState(A)
-	if err != nil {
-		return shim.Error("Failed to delete state")
-	}
+	// // Delete the key from the state in ledger
+	// err := stub.DelState(A)
+	// if err != nil {
+	// 	return shim.Error("Failed to delete state")
+	// }
 
-	return shim.Success(nil)
+	 return shim.Success(nil)
 }
 
 // query callback representing the query of a chaincode
-func (t *SimpleChaincode) query(stub shim.ChaincodeStubInterface, args []string) pb.Response {
+func (t *SmartContract) query(stub shim.ChaincodeStubInterface, args []string) pb.Response {
 	var healthRecordId string
 	var err error
 
 	if len(args) != 1 {
+		fmt.Println("len ",len(args))
 		return shim.Error("Incorrect number of arguments. Expecting health record ID query")
 	}
 
@@ -136,17 +118,17 @@ func (t *SimpleChaincode) query(stub shim.ChaincodeStubInterface, args []string)
 		return shim.Error(jsonResp)
 	}
 
-	// jsonResp := "{\"Health record ID\":\"" + healthRecordId + "\",\"DATA\":\"" + string(Avalbytes) + "\"}"
-	// fmt.Printf("Query Response:%s\n", jsonResp)
+	jsonResp := "{\"Health record ID\":\"" + healthRecordId + "\",\"DATA\":\"" + string(Avalbytes) + "\"}"
+	fmt.Printf("Query Response:%s\n", jsonResp)
 	return shim.Success(Avalbytes)
 }
 
-func (t *SimpleChaincode) rich_query(stub shim.ChaincodeStubInterface, queryString string) pb.Response {
+func (t *SmartContract) rich_query(stub shim.ChaincodeStubInterface, queryString []string) pb.Response {
     fmt.Printf("- getQueryResultForQueryString queryString:\n%s\n", queryString)
 
 	var err error
 
-	resultsIterator, err:= stub.GetQueryResult(queryString)
+	resultsIterator, err:= stub.GetQueryResult(queryString[0])
     defer resultsIterator.Close()
     if err != nil {
         return shim.Error("Incorrect")
@@ -181,8 +163,9 @@ func (t *SimpleChaincode) rich_query(stub shim.ChaincodeStubInterface, queryStri
 	return shim.Success(buffer.Bytes())
 }
 
+// The main function is only relevant in unit test mode. Only included here for completeness.
 func main() {
-	err := shim.Start(new(SimpleChaincode))
+	err := shim.Start(new(SmartContract))
 	if err != nil {
 		fmt.Printf("Error starting Simple chaincode: %s", err)
 	}

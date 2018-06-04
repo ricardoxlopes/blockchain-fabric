@@ -97,26 +97,27 @@ updateAnchorPeers 0 3
 echo "Updating anchor peers for pl1..."
 updateAnchorPeers 0 4
 
-## Install chaincode on peer0.org1 and peer0.org2
+# # ## Install chaincode on peer0.org1 and peer0.org2
 echo "Installing chaincode on peer0.org1..."
 installChaincode 0 1
-echo "Installing chaincode on peer1.org1..."
-installChaincode 1 1
-echo "Installing chaincode on peer0.org2..."
-installChaincode 0 2
-echo "Installing chaincode on peer1.org2..."
-installChaincode 1 2
-echo "Installing chaincode on peer0.org3..."
-installChaincode 0 3
-echo "Installing chaincode on peer0.pl1..."
-installChaincode 0 4
-echo "Installing chaincode on peer1.pl1..."
-installChaincode 1 4
+# echo "Installing chaincode on peer1.org1..."
+# installChaincode 1 1
+# echo "Installing chaincode on peer0.org2..."
+# installChaincode 0 2
+# echo "Installing chaincode on peer1.org2..."
+# installChaincode 1 2
+# echo "Installing chaincode on peer0.org3..."
+# installChaincode 0 3
+# echo "Installing chaincode on peer0.pl1..."
+# installChaincode 0 4
+# echo "Installing chaincode on peer1.pl1..."
+# installChaincode 1 4
 
-echo "Instantiating chaincode on peer0.org1..."
-instantiateChaincode 0 1 '"info","{\"org\":\"Hospital_2\",\"logo\":\"blob_2\",\"source\":\"Hospital_2\"}"'
+# echo "Instantiating chaincode on peer0.org1..."
+instantiateChaincode 0 1
 # echo "Instantiating chaincode on peer0.org2..."
-# instantiateChaincode 0 2 '"info1","{\"org\":\"Hospital_2\",\"logo\":\"blob_2\",\"source\":\"Hospital_2\"}"'
+#  instantiateChaincode 0 1 '"info1","{\"org\":\"Hospital_2\",\"logo\":\"blob_2\",\"source\":\"Hospital_2\"}"'
+#  instantiateChaincode 0 1 '"info1","{\"org\":\"Hospital_2\",\"logo\":\"blob_2\",\"source\":\"Hospital_2\"}"'
 # echo "Instantiating chaincode on peer0.org3..."
 # instantiateChaincode 0 3 '"info2","{\"org\":\"Hospital_3\",\"logo\":\"blob_3\",\"source\":\"Hospital_3\"}"'
 # echo "Instantiating chaincode on peer0.pl1..."

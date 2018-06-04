@@ -65,12 +65,19 @@ function printHelp () {
 # Obtain CONTAINER_IDS and remove them
 # TODO Might want to make this optional - could clear other containers
 function clearContainers () {
-  CONTAINER_IDS=$(docker ps -aq)
+  #persist the mongoDB
+  #stop mongoDB container
+  docker stop g-chain-ehr
+
+  CONTAINER_IDS=$(docker ps -q)
   if [ -z "$CONTAINER_IDS" -o "$CONTAINER_IDS" == " " ]; then
     echo "---- No containers available for deletion ----"
   else
     docker rm -f $CONTAINER_IDS
   fi
+
+  #start mongoDB container
+  docker start g-chain-ehr
 }
 
 # Delete any images that were generated as a part of this setup
