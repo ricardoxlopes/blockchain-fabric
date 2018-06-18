@@ -67,7 +67,7 @@ function printHelp () {
 function clearContainers () {
   #persist the mongoDB
   #stop mongoDB container
-  docker stop g-chain-ehr
+  docker stop g-chain-rc
 
   CONTAINER_IDS=$(docker ps -q)
   if [ -z "$CONTAINER_IDS" -o "$CONTAINER_IDS" == " " ]; then
@@ -77,7 +77,7 @@ function clearContainers () {
   fi
 
   #start mongoDB container
-  docker start g-chain-ehr
+  docker start g-chain-rc
 }
 
 # Delete any images that were generated as a part of this setup
@@ -175,7 +175,7 @@ function networkDown () {
     #Cleanup images
     removeUnwantedImages
     # remove orderer block and other channel configuration transactions and certs
-    # rm -rf channel-artifacts/*.block channel-artifacts/*.tx crypto-config TODO
+    # rm -rf channel-artifacts/*.block channel-artifacts/*.tx crypto-config #TODO
     # remove the docker-compose yaml file that was customized to the example
     rm -f docker-compose-e2e.yaml
   fi
@@ -194,7 +194,7 @@ function replacePrivateKey () {
     OPTS="-i"
   fi
 
-    # Copy the template to the file that will be modified to add the private key
+  # Copy the template to the file that will be modified to add the private key
   cp docker-compose-cli-template.yaml docker-compose-cli.yaml
 
   # The next steps will replace the template's contents with the
@@ -210,15 +210,15 @@ function replacePrivateKey () {
   cd "$CURRENT_DIR"
   sed $OPTS "s/CA2_PRIVATE_KEY/${PRIV_KEY}/g" docker-compose-cli.yaml
   
-  cd crypto-config/peerOrganizations/org3.example.com/ca/
-  PRIV_KEY=$(ls *_sk)
-  cd "$CURRENT_DIR"
-  sed $OPTS "s/CA3_PRIVATE_KEY/${PRIV_KEY}/g" docker-compose-cli.yaml
+  # cd crypto-config/peerOrganizations/org3.example.com/ca/
+  # PRIV_KEY=$(ls *_sk)
+  # cd "$CURRENT_DIR"
+  # sed $OPTS "s/CA3_PRIVATE_KEY/${PRIV_KEY}/g" docker-compose-cli.yaml
 
-  cd crypto-config/peerOrganizations/pl1.example.com/ca/
-  PRIV_KEY=$(ls *_sk)
-  cd "$CURRENT_DIR"
-  sed $OPTS "s/CAPl_PRIVATE_KEY/${PRIV_KEY}/g" docker-compose-cli.yaml
+  # cd crypto-config/peerOrganizations/pl1.example.com/ca/
+  # PRIV_KEY=$(ls *_sk)
+  # cd "$CURRENT_DIR"
+  # sed $OPTS "s/CAPl_PRIVATE_KEY/${PRIV_KEY}/g" docker-compose-cli.yaml
 
   # If MacOSX, remove the temporary backup of the docker-compose file
   if [ "$ARCH" == "Darwin" ]; then
@@ -362,6 +362,31 @@ function generateChannelArtifacts() {
   configtxgen -profile MyConsortiumChannel -outputAnchorPeersUpdate ./channel-artifacts/Org3MSPanchors.tx -channelID $CHANNEL_NAME -asOrg Org3MSP
   if [ "$?" -ne 0 ]; then
     echo "Failed to generate anchor peer update for Org3MSP..."
+    exit 1
+  fi
+  configtxgen -profile MyConsortiumChannel -outputAnchorPeersUpdate ./channel-artifacts/Org4MSPanchors.tx -channelID $CHANNEL_NAME -asOrg Org4MSP
+  if [ "$?" -ne 0 ]; then
+    echo "Failed to generate anchor peer update for Org4MSP..."
+    exit 1
+  fi
+  configtxgen -profile MyConsortiumChannel -outputAnchorPeersUpdate ./channel-artifacts/Org5MSPanchors.tx -channelID $CHANNEL_NAME -asOrg Org5MSP
+  if [ "$?" -ne 0 ]; then
+    echo "Failed to generate anchor peer update for Org5MSP..."
+    exit 1
+  fi
+  configtxgen -profile MyConsortiumChannel -outputAnchorPeersUpdate ./channel-artifacts/Org6MSPanchors.tx -channelID $CHANNEL_NAME -asOrg Org6MSP
+  if [ "$?" -ne 0 ]; then
+    echo "Failed to generate anchor peer update for Org6MSP..."
+    exit 1
+  fi
+  configtxgen -profile MyConsortiumChannel -outputAnchorPeersUpdate ./channel-artifacts/Org7MSPanchors.tx -channelID $CHANNEL_NAME -asOrg Org7MSP
+  if [ "$?" -ne 0 ]; then
+    echo "Failed to generate anchor peer update for Org7MSP..."
+    exit 1
+  fi
+  configtxgen -profile MyConsortiumChannel -outputAnchorPeersUpdate ./channel-artifacts/Org8MSPanchors.tx -channelID $CHANNEL_NAME -asOrg Org8MSP
+  if [ "$?" -ne 0 ]; then
+    echo "Failed to generate anchor peer update for Org8MSP..."
     exit 1
   fi
 

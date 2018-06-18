@@ -1,2 +1,5 @@
 .vscode/
 config/
+fabric-ca-server/*/msp/
+fabric-ca-server/*/fabric-ca-server.db
+

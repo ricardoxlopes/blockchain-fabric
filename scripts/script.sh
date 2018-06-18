@@ -56,29 +56,21 @@ createChannel() {
 }
 
 joinChannel () {
-	for org in 1 2; do
-	    for peer in 0 1; do
-			joinChannelWithRetry $peer $org
-			echo "===================== peer${peer}.org${org} joined on the mychannel ===================== "
-			sleep $DELAY
-			echo
-	    done
+	for org in 1 2 3 4 5 6 7 8; do
+		joinChannelWithRetry 0 $org
+		echo "===================== peer0.org${org} joined on the mychannel ===================== "
+		sleep $DELAY
+		echo
 	done
-	
-	joinChannelWithRetry 0 3
-	echo "===================== peer0.org3 joined on the mychannel ===================== "
-	sleep $DELAY
-	
-	echo
-	joinChannelWithRetry 0 4
-	echo "===================== peer0.pl1 joined on the mychannel ===================== "
-	sleep $DELAY
-	
-	echo
-	joinChannelWithRetry 1 4
-	echo "===================== peer1.pl1 joined on the mychannel ===================== "
-}
 
+	for org in 1 2 9; do
+		echo
+		joinChannelWithRetry 1 $org
+		echo "===================== peer1.org${org} joined on the mychannel ===================== "
+		sleep $DELAY
+	done
+}
+sleep 10
 ## Create channel
 echo "Creating channel..."
 createChannel 0 1
@@ -94,8 +86,18 @@ echo "Updating anchor peers for org2..."
 updateAnchorPeers 0 2
 echo "Updating anchor peers for org3..."
 updateAnchorPeers 0 3
-echo "Updating anchor peers for pl1..."
+echo "Updating anchor peers for org4..."
 updateAnchorPeers 0 4
+echo "Updating anchor peers for org5..."
+updateAnchorPeers 0 5
+echo "Updating anchor peers for org6..."
+updateAnchorPeers 0 6
+echo "Updating anchor peers for org7..."
+updateAnchorPeers 0 7
+echo "Updating anchor peers for org8..."
+updateAnchorPeers 0 8
+echo "Updating anchor peers for pl1..."
+updateAnchorPeers 0 9
 
 # # ## Install chaincode on peer0.org1 and peer0.org2
 echo "Installing chaincode on peer0.org1..."

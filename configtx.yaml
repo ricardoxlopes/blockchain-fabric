@@ -29,6 +29,11 @@ Profiles:
                     - *Org1
                     - *Org2
                     - *Org3
+                    - *Org4
+                    - *Org5
+                    - *Org6
+                    - *Org7
+                    - *Org8
                     - *Pl1
 
     MyConsortiumChannel:
@@ -39,6 +44,11 @@ Profiles:
                 - *Org1
                 - *Org2
                 - *Org3
+                - *Org4
+                - *Org5
+                - *Org6
+                - *Org7
+                - *Org8
                 - *Pl1
             Capabilities:
                 <<: *ApplicationCapabilities
@@ -115,6 +125,81 @@ Organizations:
             # for cross org gossip communication.  Note, this value is only
             # encoded in the genesis block in the Application section context
             - Host: peer0.org3.example.com
+              Port: 7051
+
+    - &Org4
+        Name: Org4MSP
+
+        # ID to load the MSP definition as
+        ID: Org4MSP
+
+        MSPDir: crypto-config/peerOrganizations/org4.example.com/msp
+
+        AnchorPeers:
+            # AnchorPeers defines the location of peers which can be used
+            # for cross org gossip communication.  Note, this value is only
+            # encoded in the genesis block in the Application section context
+            - Host: peer0.org4.example.com
+              Port: 7051
+
+    - &Org5
+        Name: Org5MSP
+
+        # ID to load the MSP definition as
+        ID: Org5MSP
+
+        MSPDir: crypto-config/peerOrganizations/org5.example.com/msp
+
+        AnchorPeers:
+            # AnchorPeers defines the location of peers which can be used
+            # for cross org gossip communication.  Note, this value is only
+            # encoded in the genesis block in the Application section context
+            - Host: peer0.org5.example.com
+              Port: 7051
+
+    - &Org6
+        Name: Org6MSP
+
+        # ID to load the MSP definition as
+        ID: Org6MSP
+
+        MSPDir: crypto-config/peerOrganizations/org6.example.com/msp
+
+        AnchorPeers:
+            # AnchorPeers defines the location of peers which can be used
+            # for cross org gossip communication.  Note, this value is only
+            # encoded in the genesis block in the Application section context
+            - Host: peer0.org6.example.com
+              Port: 7051
+
+    - &Org7
+        Name: Org7MSP
+
+        # ID to load the MSP definition as
+        ID: Org7MSP
+
+        MSPDir: crypto-config/peerOrganizations/org7.example.com/msp
+
+        AnchorPeers:
+            # AnchorPeers defines the location of peers which can be used
+            # for cross org gossip communication.  Note, this value is only
+            # encoded in the genesis block in the Application section context
+            - Host: peer0.org7.example.com
+              Port: 7051
+
+    - &Org8
+        Name: Org8MSP
+
+        # ID to load the MSP definition as
+        ID: Org8MSP
+
+        MSPDir: crypto-config/peerOrganizations/org8.example.com/msp
+
+        AnchorPeers:
+            # AnchorPeers defines the location of peers which can be used
+            # for cross org gossip communication.  Note, this value is only
+            # encoded in the genesis block in the Application section context
+            - Host: peer0.org8.example.com
               Port: 7051
 
     - &Pl1

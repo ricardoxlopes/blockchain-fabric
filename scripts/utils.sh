@@ -61,6 +61,56 @@ setGlobals () {
 			CORE_PEER_ADDRESS=peer1.org3.example.com:7051
 		fi
 	elif [ $ORG -eq 4 ] ; then
+		CORE_PEER_LOCALMSPID="Org4MSP"
+		# CORE_PEER_TLS_CLIENTAUTHREQUIRED=true
+		CORE_PEER_TLS_ROOTCERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org4.example.com/peers/peer0.org4.example.com/tls/ca.crt
+		CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org4.example.com/users/Admin@org4.example.com/msp
+		if [ $PEER -eq 0 ]; then
+			CORE_PEER_ADDRESS=peer0.org4.example.com:7051
+		else
+			CORE_PEER_ADDRESS=peer1.org4.example.com:7051
+		fi
+	elif [ $ORG -eq 5 ] ; then
+		CORE_PEER_LOCALMSPID="Org5MSP"
+		# CORE_PEER_TLS_CLIENTAUTHREQUIRED=true
+		CORE_PEER_TLS_ROOTCERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org5.example.com/peers/peer0.org5.example.com/tls/ca.crt
+		CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org5.example.com/users/Admin@org5.example.com/msp
+		if [ $PEER -eq 0 ]; then
+			CORE_PEER_ADDRESS=peer0.org5.example.com:7051
+		else
+			CORE_PEER_ADDRESS=peer1.org5.example.com:7051
+		fi
+	elif [ $ORG -eq 6 ] ; then
+		CORE_PEER_LOCALMSPID="Org6MSP"
+		# CORE_PEER_TLS_CLIENTAUTHREQUIRED=true
+		CORE_PEER_TLS_ROOTCERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org6.example.com/peers/peer0.org6.example.com/tls/ca.crt
+		CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org6.example.com/users/Admin@org6.example.com/msp
+		if [ $PEER -eq 0 ]; then
+			CORE_PEER_ADDRESS=peer0.org6.example.com:7051
+		else
+			CORE_PEER_ADDRESS=peer1.org6.example.com:7051
+		fi
+	elif [ $ORG -eq 7 ] ; then
+		CORE_PEER_LOCALMSPID="Org7MSP"
+		# CORE_PEER_TLS_CLIENTAUTHREQUIRED=true
+		CORE_PEER_TLS_ROOTCERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org7.example.com/peers/peer0.org7.example.com/tls/ca.crt
+		CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org7.example.com/users/Admin@org7.example.com/msp
+		if [ $PEER -eq 0 ]; then
+			CORE_PEER_ADDRESS=peer0.org7.example.com:7051
+		else
+			CORE_PEER_ADDRESS=peer1.org7.example.com:7051
+		fi
+	elif [ $ORG -eq 8 ] ; then
+		CORE_PEER_LOCALMSPID="Org8MSP"
+		# CORE_PEER_TLS_CLIENTAUTHREQUIRED=true
+		CORE_PEER_TLS_ROOTCERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org8.example.com/peers/peer0.org8.example.com/tls/ca.crt
+		CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org8.example.com/users/Admin@org8.example.com/msp
+		if [ $PEER -eq 0 ]; then
+			CORE_PEER_ADDRESS=peer0.org8.example.com:7051
+		else
+			CORE_PEER_ADDRESS=peer1.org8.example.com:7051
+		fi
+	elif [ $ORG -eq 9 ] ; then
 		CORE_PEER_LOCALMSPID="Pl1MSP"
 		# CORE_PEER_TLS_CLIENTAUTHREQUIRED=true
 		CORE_PEER_TLS_ROOTCERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/pl1.example.com/peers/peer0.pl1.example.com/tls/ca.crt
