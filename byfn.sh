@@ -210,15 +210,40 @@ function replacePrivateKey () {
   cd "$CURRENT_DIR"
   sed $OPTS "s/CA2_PRIVATE_KEY/${PRIV_KEY}/g" docker-compose-cli.yaml
   
-  # cd crypto-config/peerOrganizations/org3.example.com/ca/
-  # PRIV_KEY=$(ls *_sk)
-  # cd "$CURRENT_DIR"
-  # sed $OPTS "s/CA3_PRIVATE_KEY/${PRIV_KEY}/g" docker-compose-cli.yaml
+  cd crypto-config/peerOrganizations/org3.example.com/ca/
+  PRIV_KEY=$(ls *_sk)
+  cd "$CURRENT_DIR"
+  sed $OPTS "s/CA3_PRIVATE_KEY/${PRIV_KEY}/g" docker-compose-cli.yaml
 
-  # cd crypto-config/peerOrganizations/pl1.example.com/ca/
-  # PRIV_KEY=$(ls *_sk)
-  # cd "$CURRENT_DIR"
-  # sed $OPTS "s/CAPl_PRIVATE_KEY/${PRIV_KEY}/g" docker-compose-cli.yaml
+  cd crypto-config/peerOrganizations/org4.example.com/ca/
+  PRIV_KEY=$(ls *_sk)
+  cd "$CURRENT_DIR"
+  sed $OPTS "s/CA4_PRIVATE_KEY/${PRIV_KEY}/g" docker-compose-cli.yaml
+
+  cd crypto-config/peerOrganizations/org5.example.com/ca/
+  PRIV_KEY=$(ls *_sk)
+  cd "$CURRENT_DIR"
+  sed $OPTS "s/CA5_PRIVATE_KEY/${PRIV_KEY}/g" docker-compose-cli.yaml
+
+  cd crypto-config/peerOrganizations/org6.example.com/ca/
+  PRIV_KEY=$(ls *_sk)
+  cd "$CURRENT_DIR"
+  sed $OPTS "s/CA6_PRIVATE_KEY/${PRIV_KEY}/g" docker-compose-cli.yaml
+
+  cd crypto-config/peerOrganizations/org7.example.com/ca/
+  PRIV_KEY=$(ls *_sk)
+  cd "$CURRENT_DIR"
+  sed $OPTS "s/CA7_PRIVATE_KEY/${PRIV_KEY}/g" docker-compose-cli.yaml
+
+  cd crypto-config/peerOrganizations/org8.example.com/ca/
+  PRIV_KEY=$(ls *_sk)
+  cd "$CURRENT_DIR"
+  sed $OPTS "s/CA8_PRIVATE_KEY/${PRIV_KEY}/g" docker-compose-cli.yaml
+
+  cd crypto-config/peerOrganizations/pl1.example.com/ca/
+  PRIV_KEY=$(ls *_sk)
+  cd "$CURRENT_DIR"
+  sed $OPTS "s/CAPl_PRIVATE_KEY/${PRIV_KEY}/g" docker-compose-cli.yaml
 
   # If MacOSX, remove the temporary backup of the docker-compose file
   if [ "$ARCH" == "Darwin" ]; then
