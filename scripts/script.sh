@@ -56,7 +56,7 @@ createChannel() {
 }
 
 joinChannel () {
-	for org in 1 2 3 4 5 6 7 8; do
+	for org in 1 2 3 4 5 6 7 8 9; do
 		joinChannelWithRetry 0 $org
 		echo "===================== peer0.org${org} joined on the mychannel ===================== "
 		sleep $DELAY
@@ -104,19 +104,30 @@ echo "Installing chaincode on peer0.org1..."
 installChaincode 0 1
 # echo "Installing chaincode on peer1.org1..."
 # installChaincode 1 1
-# echo "Installing chaincode on peer0.org2..."
-# installChaincode 0 2
+echo "Installing chaincode on peer0.org2..."
+installChaincode 0 2
 # echo "Installing chaincode on peer1.org2..."
 # installChaincode 1 2
-# echo "Installing chaincode on peer0.org3..."
-# installChaincode 0 3
-# echo "Installing chaincode on peer0.pl1..."
-# installChaincode 0 4
-# echo "Installing chaincode on peer1.pl1..."
-# installChaincode 1 4
+echo "Installing chaincode on peer0.org3..."
+installChaincode 0 3
+echo "Installing chaincode on peer0.org4..."
+installChaincode 0 4
+echo "Installing chaincode on peer0.org5..."
+installChaincode 0 5
+echo "Installing chaincode on peer0.org6..."
+installChaincode 0 6
+echo "Installing chaincode on peer0.org7..."
+installChaincode 0 7
+echo "Installing chaincode on peer0.org8..."
+installChaincode 0 8
+echo "Installing chaincode on peer0.pl1..."
+installChaincode 0 9
+echo "Installing chaincode on peer1.pl1..."
+# installChaincode 1 9
 
-# echo "Instantiating chaincode on peer0.org1..."
+echo "Instantiating chaincode on peer0.org1..."
 instantiateChaincode 0 1
+
 # echo "Instantiating chaincode on peer0.org2..."
 #  instantiateChaincode 0 1 '"info1","{\"org\":\"Hospital_2\",\"logo\":\"blob_2\",\"source\":\"Hospital_2\"}"'
 #  instantiateChaincode 0 1 '"info1","{\"org\":\"Hospital_2\",\"logo\":\"blob_2\",\"source\":\"Hospital_2\"}"'

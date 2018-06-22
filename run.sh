@@ -21,11 +21,7 @@ sudo rm ./fabric-ca-server/ca8/fabric-ca-server.db
 sudo rm ./fabric-ca-server/ca9/fabric-ca-server.db
 sleep 2
 ./byfn.sh -m up -s couchdb
-rm -r ~/Desktop/client-application-fabric/my-app/client-sdk-fabric/store-Path
-rm -r ~/Desktop/client-application-fabric/my-app/client-sdk-fabric/store-Path1
-rm -r ~/Desktop/client-application-fabric/my-app/client-sdk-fabric/store-Path2
-rm -r ~/Desktop/client-application-fabric/my-app/client-sdk-fabric/store-Path3
-rm -r ~/Desktop/client-application-fabric/my-app/client-sdk-fabric/store-Path4
+# rm -r ~/Desktop/client-application-fabric/my-app/client-sdk-fabric/store-Path*
 # cd ~/Desktop/client-application-fabric/my-app/
 # yarn dev
 # cd ~/Desktop/oauth

@@ -203,6 +203,8 @@ services:
     extends:
       file:  base/docker-compose-base.yaml
       service: peer0.org1.example.com
+    # volumes:
+    # - ~/Desktop/peers/peer0.org1:/var/hyperledger/production/db
     networks:
       - byfn      
 

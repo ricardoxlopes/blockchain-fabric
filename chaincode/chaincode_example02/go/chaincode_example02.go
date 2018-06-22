@@ -2,12 +2,12 @@ package main
 
 import (
 	"fmt"
-	"encoding/json"
+
 	"bytes"
 	"github.com/hyperledger/fabric/core/chaincode/shim"
 	pb "github.com/hyperledger/fabric/protos/peer"
 )
-
+// 	"encoding/json"
 // SmartContract example simple Chaincode implementation
 type SmartContract struct {
 
@@ -39,36 +39,36 @@ func (t *SmartContract) Invoke(stub shim.ChaincodeStubInterface) pb.Response {
 }
 
 func (t *SmartContract) invoke(stub shim.ChaincodeStubInterface,args []string) pb.Response {
-	var healthRecordId string          // Transaction ID
-	var healthRecordData map[string]interface{}          // Transaction value
+	// var healthRecordId string          // Transaction ID
+	// var healthRecordData map[string]interface{}          // Transaction value
 	var err error
-	var newVar []byte;
+	// var newVar []byte;
 
 	if len(args) != 2 {
 	 	return shim.Error("Incorrect number of arguments. Expecting 2")
 	}
 
-	var healthRecord map[string]interface{};
-	// jsonValid, _ := strconv.Unquote(args)
+	// var healthRecord map[string]interface{};
+	// // jsonValid, _ := strconv.Unquote(args)
 	
-    if err = json.Unmarshal([]byte(args[1]), &healthRecord); err != nil {
-		fmt.Println("err")
-		fmt.Println(err)
-        return shim.Error("Failed to UNMARSHAL")
-	}
-	// Perform the execution
+    // if err = json.Unmarshal([]byte(args[1]), &healthRecord); err != nil {
+	// 	fmt.Println("err")
+	// 	fmt.Println(err)
+    //     return shim.Error("Failed to UNMARSHAL")
+	// }
+	// // Perform the execution
 	
-	healthRecordId = args[0];
-	healthRecordData = healthRecord;
+	// healthRecordId = args[0];
+	// healthRecordData = healthRecord;
 	
-	newVar, err = json.Marshal(healthRecordData)
+	// newVar, err = json.Marshal(healthRecordData)
 
 	if err != nil {
     	return shim.Error("Failed to Marshal")
 	}
 	
 	// Write the state back to the ledgerS
-	err = stub.PutState(healthRecordId, []byte(newVar))
+	err = stub.PutState(args[0], []byte(args[1]))
 	
 	if err != nil {
 		return shim.Error(err.Error())

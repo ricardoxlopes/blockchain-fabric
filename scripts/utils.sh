@@ -200,7 +200,7 @@ instantiateChaincode () {
 	if [ -z "$CORE_PEER_TLS_ENABLED" -o "$CORE_PEER_TLS_ENABLED" = "false" ]; then
 				set -x
 		
-		peer chaincode instantiate -o orderer0.example.com:7050 -C $CHANNEL_NAME -n mycc -l ${LANGUAGE} -v $VERSION -c '{"Args":[""]}'  -P "OR ('Org1MSP.peer','Pl1MSP.peer')" >&log.txt
+		peer chaincode instantiate -o orderer0.example.com:7050 -C $CHANNEL_NAME -n mycc -l ${LANGUAGE} -v $VERSION -c '{"Args":[""]}'  -P "OR ('Pl1MSP.client','Pl1MSP.peer')" >&log.txt
 		res=$?
 				set +x
 	else

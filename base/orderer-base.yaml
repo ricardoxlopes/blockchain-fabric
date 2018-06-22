@@ -25,6 +25,6 @@ services:
       # kafka
       - ORDERER_KAFKA_RETRY_SHORTINTERVAL=1s
       - ORDERER_KAFKA_RETRY_SHORTTOTAL=30s
-      - ORDERER_KAFKA_VERBOSE=true
+      # - ORDERER_KAFKA_VERBOSE=true
     working_dir: /opt/gopath/src/github.com/hyperledger/fabric
     command: orderer

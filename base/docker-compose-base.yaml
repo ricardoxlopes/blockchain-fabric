@@ -231,6 +231,9 @@ services:
     environment:
       - CORE_PEER_ID=peer0.pl1.example.com
       - CORE_PEER_ADDRESS=peer0.pl1.example.com:7051
+      # - CORE_PEER_TLS_CERT_FILE=/etc/hyperledger/fabric/tls2
+      # - CORE_PEER_TLS_KEY_FILE=/etc/hyperledger/fabric/tls3
+      # - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/fabric/tls1
       - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.pl1.example.com:7051
       - CORE_PEER_GOSSIP_BOOTSTRAP=peer0.pl1.example.com:7051
       - CORE_PEER_LOCALMSPID=Pl1MSP
@@ -238,6 +241,9 @@ services:
         - /var/run/:/host/var/run/
         - ../crypto-config/peerOrganizations/pl1.example.com/peers/peer0.pl1.example.com/msp:/etc/hyperledger/fabric/msp
         - ../crypto-config/peerOrganizations/pl1.example.com/peers/peer0.pl1.example.com/tls:/etc/hyperledger/fabric/tls
+        # - ../crypto-config/peerOrganizations/pl1.example.com/peers/peer0.pl1.example.com/tls/ca.crt:/etc/hyperledger/fabric/tls1
+        # - ../crypto-config/peerOrganizations/pl1.example.com/peers/peer0.pl1.example.com/tls/server.crt:/etc/hyperledger/fabric/tls2
+        # - ../crypto-config/peerOrganizations/pl1.example.com/peers/peer0.pl1.example.com/tls/server.key:/etc/hyperledger/fabric/tls3
     ports:
       - 17051:7051
       - 17053:7053
